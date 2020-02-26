@@ -10,30 +10,29 @@ import (
 	// "reflect"
 )
 
-
 func MessagesRender(messages <-chan amqp.Delivery) {
 
-	port := "161"
-	oid  := "1.3.6.1.2.1.1.1.0";
-	ipAddress := "192.168.2.184"
+	//port := "161"
+	//oid  := "1.3.6.1.2.1.1.1.0";
+	//ipAddress := "192.168.2.184"
 
 	for d := range messages {
 
 		mess := string(d.Body)
 		item := strings.Split(mess, " ")
 
-		//port := "161"
-		//oid  := item[2]
-		//ipAddress := item[1]
+		port := "161"
+		oid  := item[2]
+		ipAddress := item[1]
 
-
-		if oid != "signal_in" && oid != "signal_out" {
+		//if oid != "signal_in" && oid != "signal_out" {
 
 			handler.SnmpRequestInit(ipAddress, oid, port)
 			// log.Printf("Received a message: %s", item[1])
 			fmt.Println(item[1], item[2])
 
-		}
+		//}
+
 		// fmt.Println(reflect.TypeOf(mess))
 	}
 
@@ -52,18 +51,18 @@ func main() {
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
-		model.QUEUE_NAME,    // name
-		false,   // durable
-		false, // delete when unused
-		false,  // exclusive
-		false,   // no-wait
-		nil,       // arguments
+		model.QUEUE_NAME,  // name
+		false,      // durable
+		false,    // delete when unused
+		false,     // exclusive
+		false,      // no-wait
+		nil,          // arguments
 	)
 
 	handler.FailOnError(err, "Failed to declare a queue")
 
 	messages, err := channel.Consume(
-		queue.Name,        // queue
+		queue.Name,    // queue
 		"",    // consumer
 		true,   // auto-ack
 		false, // exclusive
@@ -81,6 +80,121 @@ func main() {
 	go func() {
 		MessagesRender(messages)
 	}()
+
+
+	go func() {
+		MessagesRender(messages)
+	}()
+
+
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
+	//
+	//
+	//go func() {
+	//	MessagesRender(messages)
+	//}()
 
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
