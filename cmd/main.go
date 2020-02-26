@@ -12,26 +12,33 @@ import (
 
 func MessagesRender(messages <-chan amqp.Delivery) {
 
-	//port := "161"
-	//oid  := "1.3.6.1.2.1.1.1.0";
-	//ipAddress := "192.168.2.184"
+	port := "161"
+	oid  := "1.3.6.1.2.1.1.1.0";
+	ipAddress := "192.168.2.184"
 
+    _count := 0
 	for d := range messages {
 
 		mess := string(d.Body)
 		item := strings.Split(mess, " ")
 
-		port := "161"
-		oid  := item[2]
-		ipAddress := item[1]
+		//port := "161"
+		//oid  := item[2]
+		//ipAddress := item[1]
 
 		//if oid != "signal_in" && oid != "signal_out" {
 
-			handler.SnmpRequestInit(ipAddress, oid, port)
+		    messageId := item[0];
+
+			handler.SnmpRequestInit(ipAddress, oid, port, messageId)
 			// log.Printf("Received a message: %s", item[1])
-			fmt.Println(item[1], item[2])
+			fmt.Println(messageId, item[2])
+
 
 		//}
+
+		log.Printf("Count: %d, ItemId : %s", _count, item[0])
+		_count++
 
 		// fmt.Println(reflect.TypeOf(mess))
 	}
@@ -77,127 +84,35 @@ func main() {
 
 	// fmt.Println(reflect.TypeOf(ch))
 
-	go func() {
-		MessagesRender(messages)
-	}()
+	//go func() {
+		// go MessagesRender(messages)
+	//}()
 
 
-	go func() {
-		MessagesRender(messages)
-	}()
+	//for a := 0; a < 150; a++ {
+	//
+	//	go MessagesRender(messages)
+	//
+	//}
 
 
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
-	//
-	//
-	//go func() {
-	//	MessagesRender(messages)
-	//}()
+	go MessagesRender(messages)
+
+	go MessagesRender(messages)
+
+	go MessagesRender(messages)
+
+	go MessagesRender(messages)
+
+	go MessagesRender(messages)
+
+	go MessagesRender(messages)
+
+	go MessagesRender(messages)
 
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+
 
 	<-forever
 }

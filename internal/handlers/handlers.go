@@ -20,7 +20,7 @@ func FailOnError(err error, msg string) {
 
 
 
-func SnmpGet(ip string, oids snmpgo.Oids, port string) {
+func SnmpGet(ip string, oids snmpgo.Oids, port string, messageId string) {
 
 
 	snmp, err := snmpgo.NewSNMP(snmpgo.SNMPArguments{
@@ -58,10 +58,10 @@ func SnmpGet(ip string, oids snmpgo.Oids, port string) {
 	resp := pdu.VarBinds()[0];
 
 	// fmt.Printf("[%s] : %s\n", ip, pdu.VarBinds())
-	fmt.Println(resp)
-	fmt.Println(resp.Oid.Value)
-	fmt.Println(resp.Variable.String())
-	fmt.Println(resp.Variable.Type())
+	// fmt.Println(resp)
+	// fmt.Println(resp.Oid.Value)
+	// fmt.Println(resp.Variable.String())
+	// fmt.Println(resp.Variable.Type())
 
 
 	message := model.ResponseMessage{}
@@ -69,31 +69,33 @@ func SnmpGet(ip string, oids snmpgo.Oids, port string) {
 	message.Value = resp.Variable.String()
 	message.Ip = ip
 
+	// fmt.Println(message);
 
-	fmt.Println(message);
-
-	CurlRun(message)
+	CurlRun(message, messageId)
 
 }
 
 
-func CurlRun(message model.ResponseMessage) {
+func CurlRun(message model.ResponseMessage, messageId string) {
 
 	payloadBytes, err := json.Marshal(message)
+
 	if err != nil {
 		// handle err
 	}
 
 	body := bytes.NewReader(payloadBytes)
 
-	req, err := http.NewRequest("POST", model.SAVE_API_URL, body)
+	req, err := http.NewRequest("POST", model.SAVE_API_URL + "?" + messageId, body)
 	if err != nil {
 		// handle err
 	}
+
 	req.Header.Set("Content-Type", "application/json")
 	// req.Header.Set("Authorization", "Bearer b7d03a6947b217efb6f3ec3bd3504582")
 
 	resp, err := http.DefaultClient.Do(req)
+
 	if err != nil {
 		// handle err
 	}
@@ -104,7 +106,7 @@ func CurlRun(message model.ResponseMessage) {
 
 
 
-func SnmpRequestInit(ipAddress string, oid string, port string ) {
+func SnmpRequestInit(ipAddress string, oid string, port string, messageId string) {
 
 	oidList, err := snmpgo.NewOids([]string{oid})
 
@@ -118,14 +120,15 @@ func SnmpRequestInit(ipAddress string, oid string, port string ) {
 
 	wg.Add(1)
 
-	go func(ip string, p string) {
+	go func(ip string, p string, messId string) {
 
 		defer wg.Done()
 
-		SnmpGet(ip, oidList, p)
+		SnmpGet(ip, oidList, p, messId)
 
-	}(ipAddress, port)
+	}(ipAddress, port, messageId)
 
 	wg.Wait()
+
 }
 
