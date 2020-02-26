@@ -126,3 +126,119 @@ func messageToOuput(messages <-chan amqp.Delivery, output chan AmqpMessage, queu
 	}
 
 }
+
+
+
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+
+
+type QueueInitParams struct {
+	Durable   bool
+	Delete    bool
+	Exclusive bool
+	NoWait    bool
+	QueueName string
+}
+
+
+//func RabbitMQInit(amqpApiUrl string) (*amqp.Channel, error) {
+//
+//	connect , err := amqp.Dial(amqpApiUrl)
+//
+//	defer connect.Close()
+//
+//	if err != nil {
+//		return 	nil , err
+//	}
+//
+//
+//	channel, err := connect.Channel()
+//
+//	defer channel.Close()
+//
+//	return channel , err
+//
+//}
+//
+//
+//func GetQueueDeclare(ch *amqp.Channel,
+//	                 queueParams QueueInitParams) (amqp.Queue, error) {
+//
+//	q, err := ch.QueueDeclare(
+//		queueParams.QueueName,    // name of the queue
+//		queueParams.Durable,
+//		queueParams.Delete,
+//		queueParams.Exclusive,
+//		queueParams.NoWait,     // noWait
+//		nil,               // arguments
+//	)
+//
+//	return q, err
+//}
+
+
+
+func AmqpFullInit(amqpApiUrl string, queueParams QueueInitParams) (amqp.Queue, error) {
+
+
+	connect, err := amqp.Dial(amqpApiUrl)
+	FailOnError(err, "Failed to connect to RabbitMQ")
+	defer connect.Close()
+
+	channel, err := connect.Channel()
+	FailOnError(err, "Failed to open a channel")
+	defer channel.Close()
+
+	queue, err := channel.QueueDeclare(
+		queueParams.QueueName,  // name of the queue
+		queueParams.Durable,    // durable
+		queueParams.Delete,     // delete when unused
+		queueParams.Exclusive,  // exclusive
+		queueParams.NoWait,     // no-Wait
+		nil,               // arguments
+	)
+
+	return queue, err
+
+}
+
+
+
+func FailOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
+}
+
+
+
+func AmqpInitialize(amqpApiUrl string) (*amqp.Channel, error) {
+
+
+	connect, err := amqp.Dial(amqpApiUrl)
+	FailOnError(err, "Failed to connect to RabbitMQ")
+	//defer connect.Close()
+
+	channel, err := connect.Channel()
+	FailOnError(err, "Failed to open a channel")
+	// defer channel.Close()
+
+	return channel, err
+
+}
+
+
+func QueueDeclareInit(ch *amqp.Channel, queueParams QueueInitParams) (amqp.Queue, error) {
+
+	queue, err := ch.QueueDeclare(
+		queueParams.QueueName,  // name of the queue
+		queueParams.Durable,    // durable
+		queueParams.Delete,     // delete when unused
+		queueParams.Exclusive,  // exclusive
+		queueParams.NoWait,     // no-Wait
+		nil,               // arguments
+	)
+
+	return queue, err
+}
