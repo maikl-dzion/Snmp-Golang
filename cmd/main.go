@@ -3,7 +3,7 @@ package main
 import (
 	"../internal/handlers"
 	"../internal/models"
-	"fmt"
+	// "fmt"
 	"github.com/streadway/amqp"
 	"log"
 	"strings"
@@ -17,6 +17,7 @@ func MessagesRender(messages <-chan amqp.Delivery) {
 	ipAddress := "192.168.2.184"
 
     _count := 0
+
 	for d := range messages {
 
 		mess := string(d.Body)
@@ -26,25 +27,22 @@ func MessagesRender(messages <-chan amqp.Delivery) {
 		//oid  := item[2]
 		//ipAddress := item[1]
 
-		//if oid != "signal_in" && oid != "signal_out" {
+		//if oid != "signal_in" && oid != "signal_out"
 
-		    messageId := item[0];
+		messageId := item[0];
+		handler.SnmpRequestInit(ipAddress, oid, port, messageId)
 
-			handler.SnmpRequestInit(ipAddress, oid, port, messageId)
-			// log.Printf("Received a message: %s", item[1])
-			fmt.Println(messageId, item[2])
-
-
-		//}
-
-		log.Printf("Count: %d, ItemId : %s", _count, item[0])
+		log.Printf("Count: %d, MessageId : %s", _count, messageId)
 		_count++
 
-		// fmt.Println(reflect.TypeOf(mess))
 	}
 
 }
 
+// fmt.Println(reflect.TypeOf(mess))
+// cd /home/dev/web/loader/log
+// wc db.log
+// sudo rm db.log
 
 
 func main() {
