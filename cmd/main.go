@@ -18,6 +18,7 @@ func MessagesRender(messages <-chan amqp.Delivery) {
 
     _count := 0
 
+
 	for d := range messages {
 
 		mess := string(d.Body)
@@ -87,26 +88,18 @@ func main() {
 	//}()
 
 
-	//for a := 0; a < 150; a++ {
-	//
-	//	go MessagesRender(messages)
-	//
-	//}
+	for a := 0; a < 10; a++ {
+		go MessagesRender(messages)
+	}
 
 
-	go MessagesRender(messages)
-
-	go MessagesRender(messages)
-
-	go MessagesRender(messages)
-
-	go MessagesRender(messages)
-
-	go MessagesRender(messages)
-
-	go MessagesRender(messages)
-
-	go MessagesRender(messages)
+	//go MessagesRender(messages)
+	//go MessagesRender(messages)
+	//go MessagesRender(messages)
+	//go MessagesRender(messages)
+	//go MessagesRender(messages)
+	//go MessagesRender(messages)
+	//go MessagesRender(messages)
 
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")

@@ -44,6 +44,7 @@ func SnmpGet(ip string, oids snmpgo.Oids, port string, messageId string) {
 	defer snmp.Close()
 
 	pdu, err := snmp.GetRequest(oids)
+
 	if err != nil {
 		fmt.Printf("[%s] : get error - %s\n", ip, err)
 		return
