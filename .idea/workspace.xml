@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32fe25eb-94e5-4f3a-9426-27cca089df32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg_1/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pointers/pointer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/mainSnmp.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/mainSnmp.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/models.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg_1/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg_1/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -42,8 +37,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pkg_1/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+            <state relative-caret-position="450">
+              <caret line="30" selection-start-line="30" selection-end-line="30" />
               <folding>
                 <element signature="e#14#83#0" expanded="true" />
               </folding>
@@ -111,8 +106,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+            <state relative-caret-position="150">
+              <caret line="10" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="e#22#132#0" expanded="true" />
               </folding>
@@ -174,14 +169,14 @@
         <option value="$PROJECT_DIR$/internal/snmp_handler/snmpgfh.go" />
         <option value="$PROJECT_DIR$/cmd/mainSnmp.go" />
         <option value="$PROJECT_DIR$/internal/models/models.go" />
-        <option value="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" />
         <option value="$PROJECT_DIR$/pkg_1/main.go" />
+        <option value="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="381" />
-    <option name="y" value="35" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="375" />
+    <option name="y" value="47" />
     <option name="width" value="1357" />
     <option name="height" value="947" />
   </component>
@@ -311,12 +306,12 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13326226" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13326226" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.25757575" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.25757575" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.32142857" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -482,8 +477,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pkg_1/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+        <state relative-caret-position="450">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
           <folding>
             <element signature="e#14#83#0" expanded="true" />
           </folding>
@@ -492,8 +487,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+        <state relative-caret-position="150">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
           <folding>
             <element signature="e#22#132#0" expanded="true" />
           </folding>

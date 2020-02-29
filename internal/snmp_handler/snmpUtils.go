@@ -1,31 +1,46 @@
 package snmp_handler
 
 import (
-	//"flag"
 	"fmt"
+	"math/big"
 	"os"
-	//"path/filepath"
 	"time"
-
 	"github.com/soniah/gosnmp"
-
 	model "../models"
 )
 
 
-
-type SnmpMessage struct{
+type SnmpResultMessage struct{
 	Oid string
+	ValueStr string
+	ValueInt *big.Int
+	Type gosnmp.Asn1BER
 }
 
 type ResponseSnmpItems struct{
-	Items []SnmpMessage
+	Items []SnmpResultMessage
 }
 
 
-func (sn *ResponseSnmpItems) collectValues(pdu gosnmp.SnmpPDU)  error {
+func (sn *ResponseSnmpItems) CollectValues(pdu gosnmp.SnmpPDU)  error {
 
-	item := SnmpMessage{ Oid: pdu.Name}
+	var valueStr string = ""
+	var valueInt *big.Int
+
+	switch pdu.Type {
+		case gosnmp.OctetString:
+			valueStr = string(pdu.Value.([]byte))
+		default:
+			valueInt = gosnmp.ToBigInt(pdu.Value)
+	}
+
+
+	item := SnmpResultMessage{
+		pdu.Name,
+		valueStr,
+		valueInt,
+		pdu.Type,
+	}
 
 	sn.Items = append(sn.Items, item)
 
@@ -34,56 +49,26 @@ func (sn *ResponseSnmpItems) collectValues(pdu gosnmp.SnmpPDU)  error {
 }
 
 
-func (sn *ResponseSnmpItems) printValues()  {
+func (sn *ResponseSnmpItems) PrintValues()  {
 
 	for i , item := range sn.Items {
-		fmt.Println("i:", i, "oid:", item.Oid)
+		fmt.Println("I:", i,
+			           "Oid:", item.Oid,
+			           "Value str:", item.ValueStr,
+			           "Value int:", item.ValueInt,
+			           "Type:", item.Type,
+		            )
 	}
 
 }
 
 
-func SnmpExecute(sendParams model.SnmpSendParams) {
-
-	//flag.Usage = func() {
-	//	fmt.Printf("Usage:\n")
-	//	fmt.Printf("   %s [-community=<community>] host [oid]\n", filepath.Base(os.Args[0]))
-	//	fmt.Printf("     host      - the host to walk/scan\n")
-	//	fmt.Printf("     oid       - the MIB/Oid defining a subtree of values\n\n")
-	//	flag.PrintDefaults()
-	//}
-	//
-	//var community string
-	//
-	//flag.StringVar(&community, "community", "public", "the community string for device")
-	//
-	//flag.Parse()
-
-	//if len(flag.Args()) < 1 {
-	//	flag.Usage()
-	//	os.Exit(1)
-	//}
-	//
-	//target := flag.Args()[0]
-	//
-	//var oid string
-	//
-	//if len(flag.Args()) > 1 {
-	//	oid = flag.Args()[1]
-	//}
-
-	// .1.3.6.1.4.1.119.2.3.69.501.7.10.1.8.1
-
-
-	//target := "190.169.1.5"
-	//// oid := ".1.3.6.1.4.1"
-	//// oid := ".1.3.6.1.4.1.119.2.3.69.501.7"
-	//oid := ".1.3.6.1.4.1.119.2.3.69.501.7.1.1"
+func SnmpBulkExecute(sendParams model.SnmpSendParams) (ResponseSnmpItems, error) {
 
 	oid := sendParams.Oid
 	gosnmp.Default.Target    = sendParams.Ip
 	gosnmp.Default.Community = sendParams.Community
-	gosnmp.Default.Timeout = time.Duration(10 * time.Second) // Timeout better suited to walking
+	gosnmp.Default.Timeout   = time.Duration(10 * time.Second) // Timeout better suited to walking
 	err := gosnmp.Default.Connect()
 	if err != nil {
 		fmt.Printf("Connect err: %v\n", err)
@@ -94,12 +79,11 @@ func SnmpExecute(sendParams model.SnmpSendParams) {
 
 	sn := ResponseSnmpItems{}
 
-	err = gosnmp.Default.BulkWalk(oid, sn.collectValues)
+	err = gosnmp.Default.BulkWalk(oid, sn.CollectValues)
 	if err != nil {
 		fmt.Printf("Walk Error: %v\n", err)
 		os.Exit(1)
 	}
 
-	sn.printValues()
-	// fmt.Println(r.RespItems)
+	return sn, err
 }
