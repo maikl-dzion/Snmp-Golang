@@ -1,6 +1,5 @@
 package model
 
-
 type ResponseMessage struct {
 	Oid      string `json:"oid"`
 	Value    string `json:"value"`
@@ -12,3 +11,13 @@ type ResponseMessage struct {
 const QUEUE_NAME   = "SNMP_QUEUE"
 const SAVE_API_URL = "http://172.16.16.235:8080/data/save"
 const AMQP_API_URL = "amqp://tester:12345@172.16.16.235:5672/"
+
+
+
+type SnmpSendParams struct {
+	Ip string
+	Oid string
+	Community string
+	Port string
+	SelCount int
+}

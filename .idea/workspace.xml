@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32fe25eb-94e5-4f3a-9426-27cca089df32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/amqp_handler/amqpHandler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg_1/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pointers/pointer.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/amqp-dir/run.go" beforeDir="false" afterPath="$PROJECT_DIR$/example/amqp-dir/run.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/handlers/handlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/handlers.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg_gosnmp/snmp.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/mainSnmp.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/mainSnmp.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,8 +21,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cmd/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="403">
-              <caret line="83" column="38" lean-forward="true" selection-start-line="83" selection-start-column="7" selection-end-line="83" selection-end-column="38" />
+            <state relative-caret-position="90">
+              <caret line="6" column="5" lean-forward="true" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -29,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cmd/mainSnmp.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+            <state relative-caret-position="135">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
               <folding>
                 <element signature="e#14#72#0" expanded="true" />
               </folding>
@@ -39,43 +40,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/internal/handlers/handlers.go">
+        <entry file="file://$PROJECT_DIR$/pkg_1/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
-              <caret line="64" column="22" lean-forward="true" selection-start-line="60" selection-start-column="4" selection-end-line="64" selection-end-column="22" />
+            <state relative-caret-position="330">
+              <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
               <folding>
-                <element signature="e#17#128#0" expanded="true" />
+                <element signature="e#14#83#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/internal/amqp_handler/amqpHandler.go">
+        <entry file="file://$PROJECT_DIR$/pointers/pointer.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
-              <folding>
-                <element signature="e#22#132#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/marshal.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7">
-              <caret line="111" column="15" selection-start-line="111" selection-start-column="9" selection-end-line="111" selection-end-column="15" />
+            <state relative-caret-position="150">
+              <caret line="10" selection-start-line="10" selection-end-line="10" />
             </state>
           </provider>
         </entry>
@@ -83,8 +63,59 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/gosnmp.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1262">
-              <caret line="519" column="28" selection-start-line="519" selection-start-column="17" selection-end-line="519" selection-end-column="28" />
+            <state relative-caret-position="226">
+              <caret line="512" column="17" selection-start-line="512" selection-start-column="13" selection-end-line="512" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/marshal.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="856">
+              <caret line="134" column="25" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="82" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/walk.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="98" column="28" selection-start-line="98" selection-start-column="22" selection-end-line="98" selection-end-column="28" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/internal/models/models.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="22" column="1" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="795">
+              <caret line="53" column="34" selection-start-line="53" selection-start-column="27" selection-end-line="53" selection-end-column="34" />
+              <folding>
+                <element signature="e#22#132#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+              <folding>
+                <element signature="e#22#132#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -138,8 +169,13 @@
         <option value="$PROJECT_DIR$/internal/snmp_service/snmpHandler.go" />
         <option value="$PROJECT_DIR$/internal/amqp_service/amqpHandler.go" />
         <option value="$PROJECT_DIR$/cmd/main.go" />
-        <option value="$PROJECT_DIR$/cmd/mainSnmp.go" />
         <option value="$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" />
+        <option value="$PROJECT_DIR$/pointers/pointer.go" />
+        <option value="$PROJECT_DIR$/internal/snmp_handler/snmpgfh.go" />
+        <option value="$PROJECT_DIR$/cmd/mainSnmp.go" />
+        <option value="$PROJECT_DIR$/internal/models/models.go" />
+        <option value="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" />
+        <option value="$PROJECT_DIR$/pkg_1/main.go" />
       </list>
     </option>
   </component>
@@ -165,18 +201,13 @@
             <path>
               <item name="Snmp-Golang" type="b2602c69:ProjectViewProjectNode" />
               <item name="Snmp-Golang" type="462c0819:PsiDirectoryNode" />
-              <item name="cmd" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Snmp-Golang" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Snmp-Golang" type="462c0819:PsiDirectoryNode" />
               <item name="internal" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Snmp-Golang" type="b2602c69:ProjectViewProjectNode" />
               <item name="Snmp-Golang" type="462c0819:PsiDirectoryNode" />
               <item name="internal" type="462c0819:PsiDirectoryNode" />
-              <item name="amqp_handler" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Snmp-Golang" type="b2602c69:ProjectViewProjectNode" />
@@ -225,20 +256,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build mainSnmp.go">
-    <configuration name="go build amqp.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="Snmp-Golang" />
-      <working_directory value="$PROJECT_DIR$/" />
-      <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/example/amqp.go" />
-      <directory value="$PROJECT_DIR$/" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Go Build.go build main.go (1)">
     <configuration name="go build mainSnmp.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Snmp-Golang" />
       <working_directory value="$PROJECT_DIR$/" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/cmd/mainSnmp.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build main.go (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Snmp-Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/pkg_1/main.go" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
@@ -250,11 +281,11 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build run.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build pointer.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Snmp-Golang" />
       <working_directory value="$PROJECT_DIR$/" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/example/amqp-dir/run.go" />
+      <filePath value="$PROJECT_DIR$/pointers/pointer.go" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
@@ -268,11 +299,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build main.go (1)" />
+        <item itemvalue="Go Build.go build pointer.go" />
         <item itemvalue="Go Build.go build mainSnmp.go" />
         <item itemvalue="Go Build.go build snmp.go" />
         <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Build.go build run.go" />
-        <item itemvalue="Go Build.go build amqp.go" />
       </list>
     </recent_temporary>
   </component>
@@ -280,13 +311,13 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13326226" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13326226" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.30627707" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.32142857" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.25757575" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.32142857" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -339,13 +370,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/internal/models/models.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="12" column="22" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/example/consumer/init.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="854">
@@ -380,17 +404,17 @@
     <entry file="file://$PROJECT_DIR$/cmd/snmpCollector.go">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/marshal.go">
+    <entry file="file://$PROJECT_DIR$/cmd/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7">
-          <caret line="111" column="15" selection-start-line="111" selection-start-column="9" selection-end-line="111" selection-end-column="15" />
+        <state relative-caret-position="90">
+          <caret line="6" column="5" lean-forward="true" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/gosnmp.go">
+    <entry file="file://$PROJECT_DIR$/internal/handlers/handlers.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1262">
-          <caret line="519" column="28" selection-start-line="519" selection-start-column="17" selection-end-line="519" selection-end-column="28" />
+        <state relative-caret-position="105">
+          <caret line="7" column="5" lean-forward="true" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -401,37 +425,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/internal/handlers/handlers.go">
+    <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/marshal.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="64" column="22" lean-forward="true" selection-start-line="60" selection-start-column="4" selection-end-line="64" selection-end-column="22" />
-          <folding>
-            <element signature="e#17#128#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="856">
+          <caret line="134" column="25" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="82" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cmd/main.go">
+    <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/gosnmp.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="403">
-          <caret line="83" column="38" lean-forward="true" selection-start-line="83" selection-start-column="7" selection-end-line="83" selection-end-column="38" />
+        <state relative-caret-position="226">
+          <caret line="512" column="17" selection-start-line="512" selection-start-column="13" selection-end-line="512" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/gopath/src/github.com/soniah/gosnmp/walk.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="98" column="28" selection-start-line="98" selection-start-column="22" selection-end-line="98" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pointers/pointer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="795">
+          <caret line="53" column="34" selection-start-line="53" selection-start-column="27" selection-end-line="53" selection-end-column="34" />
+          <folding>
+            <element signature="e#22#132#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cmd/mainSnmp.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+        <state relative-caret-position="135">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
           <folding>
             <element signature="e#14#72#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go">
+    <entry file="file://$PROJECT_DIR$/internal/models/models.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+        <state relative-caret-position="330">
+          <caret line="22" column="1" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pkg_1/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+          <folding>
+            <element signature="e#14#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
           <folding>
             <element signature="e#22#132#0" expanded="true" />
           </folding>

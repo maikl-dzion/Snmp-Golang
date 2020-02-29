@@ -13,10 +13,10 @@ import (
 )
 
 func SnmpBulkExec(target string,
-	           oid string,
-	           selectCount int,
-	           community string,
-	           port string)  ([]model.ResponseMessage, bool, string) {
+	              oid string,
+	              selectCount int,
+	              community string,
+	              port string)  ([]model.ResponseMessage, bool, string) {
 
 
 	if len(target) <= 0 {
@@ -113,7 +113,9 @@ func SnmpBulkExec(target string,
 }
 
 
+func GetBulkRecursive(sn *snmp.GoSNMP, mess *[]model.ResponseMessage) {
 
+}
 
 
 func BulkTreeRecursive(ip string, oid string, selectCount int, community string, port string) ([]model.ResponseMessage){
