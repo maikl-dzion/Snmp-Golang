@@ -39,6 +39,7 @@ func main() {
 
 
 	c, err := NewConsumer(*uri, *exchange, *exchangeType, *queue, *bindingKey, *consumerTag)
+
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
@@ -56,6 +57,7 @@ func main() {
 	if err := c.Shutdown(); err != nil {
 		log.Fatalf("error during shutdown: %s", err)
 	}
+
 }
 
 type Consumer struct {

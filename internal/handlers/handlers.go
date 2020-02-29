@@ -58,19 +58,11 @@ func SnmpGet(ip string, oids snmpgo.Oids, port string, messageId string) {
 
 	resp := pdu.VarBinds()[0];
 
-	// fmt.Printf("[%s] : %s\n", ip, pdu.VarBinds())
-	// fmt.Println(resp)
-	// fmt.Println(resp.Oid.Value)
-	// fmt.Println(resp.Variable.String())
-	// fmt.Println(resp.Variable.Type())
-
-
 	message := model.ResponseMessage{}
-	message.Oid = resp.Oid.String()
-	message.Value = resp.Variable.String()
-	message.Ip = ip
 
-	// fmt.Println(message);
+	message.Oid   = resp.Oid.String()
+	message.Value = resp.Variable.String()
+	message.Ip    = ip
 
 	CurlRun(message, messageId)
 
