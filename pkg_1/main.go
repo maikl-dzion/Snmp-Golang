@@ -17,14 +17,18 @@ func main() {
 		0,
 	}
 
+	sn.BulkRequestRun(param)
 
-	response, err := sn.SnmpBulkExecute(param)
 
-	if err != nil {
-		panic("Snmp Send Error")
+	param2 := model.SnmpSendParams{
+		"190.169.1.5",
+		".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.4.17",
+		"public",
+		"161",
+		0,
 	}
 
+	sn.GetRequestRun(param2)
 
-	response.PrintValues()
 
 }
