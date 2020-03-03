@@ -196,40 +196,16 @@ func SendCurlExec(saveApiUrl string, messages []model.ResponseMessage, messageId
 }
 
 
-
-func MakeJsonRequest(apiUrl string) {
-
-	//message := map[string]interface{}{
-	//	"hello": "world",
-	//	"life":  42,
-	//	"embedded": map[string]string{
-	//		"yes": "of course!",
-	//	},
-	//}
+func MakeJsonRequest(apiUrl string, messages model.ResponseJsonItems) {
 
 
-	message := map[string]interface{}{
-
-		"embedded": map[string]string{
-			"oid": "64564664664",
-		},
-
-		"embedded2": map[string]string{
-			"oid": "64564664664",
-		},
-	}
-
-
-
-    fmt.Println(message)
-
-
-	bytesRepresentation, err := json.Marshal(message)
+	bytesRepresentation, err := json.Marshal(messages)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	resp, err := http.Post(apiUrl, "application/json", bytes.NewBuffer(bytesRepresentation))
+	resp, err := http.Post(apiUrl, "application/json",
+		                   bytes.NewBuffer(bytesRepresentation))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -240,4 +216,5 @@ func MakeJsonRequest(apiUrl string) {
 
 	log.Println(result)
 	log.Println(result["data"])
+
 }
