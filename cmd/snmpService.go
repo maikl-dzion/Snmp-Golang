@@ -1,9 +1,10 @@
 package main
 
 import (
+	// snmp_serv "../internal/snmp_handler"
 	rabbitmq "../internal/amqp_handler"
 	model "../internal/models"
-	// snmp_serv "../internal/snmp_handler"
+	"fmt"
 )
 
 
@@ -41,7 +42,6 @@ func main() {
 	//
 	//rabbitmq.RecevieMessagesListFromQueue(amqpUrl, queueName)
 
-
 	saveApiUrl := model.SAVE_API_URL
 
 	//messages := []model.ResponseMessage{}
@@ -62,12 +62,18 @@ func main() {
 
 	messages := model.ResponseJsonItems{}
 
+	//messages.SetJsonItem("192.168.10.12", "Тест 100", ".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17", "234", "INTEGER")
+	//messages.SetJsonItem("192.168.10.12", "Тест 200", ".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17", "235", "INTEGER")
+	//messages.SetJsonItem("192.168.10.12", "Тест 300", ".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17", "236", "INTEGER")
+	//
+	//fmt.Println(messages.Items)
+
 	messages = append(messages, model.ResponseMessage{
 									 Oid:".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17",
 									 Ip: "192.168.10.12 cvbb",
 									 Value:"Тест 100",
 									 DeviceId: "234",
-		                        },)
+		                        })
 
 
 	messages = append(messages,model.ResponseMessage{
@@ -75,7 +81,10 @@ func main() {
 									Ip: "192.168.10.12 dff",
 									Value:"Тест 20456",
 									DeviceId: "234",
-								},)
+	                           })
+
+	fmt.Println(messages)
+
 
 	rabbitmq.MakeJsonRequest(saveApiUrl, messages)
 

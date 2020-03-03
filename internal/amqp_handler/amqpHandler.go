@@ -166,36 +166,6 @@ func FormAmqpItem(msg mq.Delivery) AmqpSendItem {
 }
 
 
-
-func SendCurlExec(saveApiUrl string, messages []model.ResponseMessage, messageId string) {
-
-	payloadBytes, err := json.Marshal(messages)
-
-	if err != nil {
-		// handle err
-	}
-
-	body := bytes.NewReader(payloadBytes)
-
-	req, err := http.NewRequest("POST", saveApiUrl + "?" + messageId, body)
-	if err != nil {
-		// handle err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	// req.Header.Set("Authorization", "Bearer b7d03a6947b217efb6f3ec3bd3504582")
-
-	resp, err := http.DefaultClient.Do(req)
-
-	if err != nil {
-		// handle err
-	}
-
-	defer resp.Body.Close()
-
-}
-
-
 func MakeJsonRequest(apiUrl string, messages model.ResponseJsonItems) {
 
 
