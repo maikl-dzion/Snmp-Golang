@@ -1,15 +1,33 @@
 package amqp_handler
 
-
 import (
-	model "../models"
+	"bytes"
+	"encoding/json"
 	"fmt"
-	mq "github.com/streadway/amqp"
 	"log"
+	"net/http"
 	"strings"
+
+	model "../models"
+	mq "github.com/streadway/amqp"
+	// snmp_handl "../snmp_handler"
 )
 
-func MessagesRendering(messages <-chan mq.Delivery) {
+
+
+type AmqpSendItem struct{
+	Oid string
+	Ip string
+	Id string
+	Port string
+}
+
+type AmqpSendItems struct{
+	Items []AmqpSendItem
+}
+
+
+func MessagesListRendering(messages <-chan mq.Delivery) {
 
 	//port := "161"
 	//oid  := "1.3.6.1.2.1.1.1.0";
@@ -23,28 +41,24 @@ func MessagesRendering(messages <-chan mq.Delivery) {
 	//	0,
 	//}
 
-	for m := range messages {
+	ch    := 0
+	items := AmqpSendItems{}
 
-		mess := string(m.Body)
-		item := strings.Split(mess, " ")
-		messageId := item[0];
+	for msg := range messages {
 
-		//ipAddress := item[1]
-		//oid  := item[2]
-		//port := "161"
-
+		res := FormAmqpItem(msg)
+		items.Items = append(items.Items, res)
 		// snmp_handl.BulkRequestRun(sendParams)
-		fmt.Println(messageId)
-
+		fmt.Println("I:", ch)
+		ch++
 	}
 
 }
 
 
+func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 
-func RecevieMessagesFromQueue() {
-
-	connect, err := mq.Dial(model.AMQP_API_URL)
+	connect, err := mq.Dial(amqpUrl)
 	FailOnError(err, "Failed to connect to RabbitMQ")
 	defer connect.Close()
 
@@ -53,7 +67,7 @@ func RecevieMessagesFromQueue() {
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
-		model.QUEUE_NAME,  // name
+		queueName,  // name
 		false,      // durable
 		false,    // delete when unused
 		false,     // exclusive
@@ -76,25 +90,7 @@ func RecevieMessagesFromQueue() {
 	FailOnError(err, "Failed to register a consumer")
 
 
-	ch := 0
-
-	for m := range messages {
-
-		mess := string(m.Body)
-		item := strings.Split(mess, " ")
-		messageId := item[0];
-
-		//ipAddress := item[1]
-		//oid  := item[2]
-		//port := "161"
-
-		// snmp_handl.BulkRequestRun(sendParams)
-
-		fmt.Println("I:", ch, "MessageId:", messageId)
-		ch++
-
-	}
-
+	MessagesListRendering(messages)
 
 	// fmt.Println(messages)
 
@@ -114,9 +110,134 @@ func RecevieMessagesFromQueue() {
 }
 
 
+func RecevieGetMessageOne(amqpUrl string, queueName string) {
+
+	connect, err := mq.Dial(amqpUrl)
+	FailOnError(err, "Failed to connect to RabbitMQ")
+	defer connect.Close()
+
+	channel, err := connect.Channel()
+	FailOnError(err, "Failed to open a channel")
+	defer channel.Close()
+
+	queue, err := channel.QueueDeclare(
+		queueName,  // name
+		false,      // durable
+		false,    // delete when unused
+		false,     // exclusive
+		false,      // no-wait
+		nil,          // arguments
+	)
+
+	FailOnError(err, "Failed to declare a queue")
+
+	resultMessage , _ , err := channel.Get(queue.Name, true)
+
+	FailOnError(err, "Failed to register a consumer")
+
+	message := string(resultMessage.Body)
+
+	fmt.Println(message)
+
+}
+
 
 func FailOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
 	}
+}
+
+
+func FormAmqpItem(msg mq.Delivery) AmqpSendItem {
+
+	item    := string(msg.Body)
+	message := strings.Split(item, " ")
+
+	sendItem := AmqpSendItem {
+		Id  : message[0],
+		Ip  : message[1],
+		Oid : message[2],
+		Port: message[3],
+	}
+
+	return sendItem;
+
+}
+
+
+
+func SendCurlExec(saveApiUrl string, messages []model.ResponseMessage, messageId string) {
+
+	payloadBytes, err := json.Marshal(messages)
+
+	if err != nil {
+		// handle err
+	}
+
+	body := bytes.NewReader(payloadBytes)
+
+	req, err := http.NewRequest("POST", saveApiUrl + "?" + messageId, body)
+	if err != nil {
+		// handle err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	// req.Header.Set("Authorization", "Bearer b7d03a6947b217efb6f3ec3bd3504582")
+
+	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		// handle err
+	}
+
+	defer resp.Body.Close()
+
+}
+
+
+
+func MakeJsonRequest(apiUrl string) {
+
+	//message := map[string]interface{}{
+	//	"hello": "world",
+	//	"life":  42,
+	//	"embedded": map[string]string{
+	//		"yes": "of course!",
+	//	},
+	//}
+
+
+	message := map[string]interface{}{
+
+		"embedded": map[string]string{
+			"oid": "64564664664",
+		},
+
+		"embedded2": map[string]string{
+			"oid": "64564664664",
+		},
+	}
+
+
+
+    fmt.Println(message)
+
+
+	bytesRepresentation, err := json.Marshal(message)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	resp, err := http.Post(apiUrl, "application/json", bytes.NewBuffer(bytesRepresentation))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var result map[string]interface{}
+
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	log.Println(result)
+	log.Println(result["data"])
 }

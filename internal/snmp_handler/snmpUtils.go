@@ -44,7 +44,7 @@ func (sn *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU)  error {
 	//	pdu.Type,
 	//}
 
-	message := FormMessage(pdu)
+	message := FormSnmpItem(pdu)
 
 	sn.Items = append(sn.Items, message)
 
@@ -125,7 +125,7 @@ func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 	sn := SnmpResultItems{}
 
 	for _, variable := range result.Variables {
-		message := FormMessage(variable)
+		message := FormSnmpItem(variable)
 		sn.Items = append(sn.Items, message)
 	}
 
@@ -134,7 +134,7 @@ func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 
 
 
-func FormMessage(pdu snmp.SnmpPDU) SnmpResultMessage {
+func FormSnmpItem(pdu snmp.SnmpPDU) SnmpResultMessage {
 
 	var valueStr string = ""
 	var valueInt *big.Int
@@ -158,7 +158,6 @@ func FormMessage(pdu snmp.SnmpPDU) SnmpResultMessage {
 }
 
 
-
 func BulkRequestRun(sendParams model.SnmpSendParams) {
 
 	resultItems, err := SnmpBulkExecute(sendParams)
@@ -168,7 +167,6 @@ func BulkRequestRun(sendParams model.SnmpSendParams) {
 
 	resultItems.PrintValues()
 }
-
 
 
 func GetRequestRun(sendParams model.SnmpSendParams) {

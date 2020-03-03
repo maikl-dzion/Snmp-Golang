@@ -1,9 +1,9 @@
 package main
 
 import (
-	// model "../internal/models"
-	// sn "../internal/snmp_handler"
-	rmq "../internal/amqp_handler"
+	rabbitmq "../internal/amqp_handler"
+	model "../internal/models"
+	// snmp_serv "../internal/snmp_handler"
 )
 
 
@@ -18,7 +18,8 @@ func main() {
 	//	0,
 	//}
 	//
-	//sn.BulkRequestRun(param)
+	//snmp_serv.BulkRequestRun(param)
+
 	//
 	//
 	//param2 := model.SnmpSendParams{
@@ -32,7 +33,44 @@ func main() {
 	//sn.GetRequestRun(param2)
 
 
-	rmq.RecevieMessagesFromQueue()
+
+	//queueName := model.QUEUE_NAME
+	//amqpUrl   := model.AMQP_API_URL
+	//
+	//// rabbitmq.RecevieMessageItem(amqpUrl, queueName)
+	//
+	//rabbitmq.RecevieMessagesListFromQueue(amqpUrl, queueName)
+
+
+	saveApiUrl := model.SAVE_API_URL
+
+	//messages := []model.ResponseMessage{}
+	//
+	//messages = append(messages, model.ResponseMessage{
+	//	                         Oid:".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17",
+	//	                         Ip: "192.168.10.12",
+	//	                         Value:"MG-It",
+	//	                         DeviceId: "234",
+	//                            })
+	//
+	//
+	//rabbitmq.SendCurlExec(saveUrl, messages, "10")
+
+
+	saveApiUrl = "http://localhost/snmp-url/"
+
+	rabbitmq.MakeJsonRequest(saveApiUrl)
 
 
 }
+
+
+
+type ResponseJsonItems struct {
+	JsonItems [] model.ResponseMessage
+}
+
+
+//func (r ResponseJsonItems) FomattedJson(d model.ResponseMessage) {
+//	r = append(r, []byte(d))
+//}
