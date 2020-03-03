@@ -69,6 +69,7 @@ func main() {
 									 DeviceId: "234",
 		                        },)
 
+
 	messages = append(messages,model.ResponseMessage{
 									Oid:".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17",
 									Ip: "192.168.10.12 dff",
