@@ -14,9 +14,9 @@ import (
 
 type SnmpResultMessage struct{
 	Oid      string `json:"oid"`
+	Ip       string `json:"ip"`
 	ValueInt int64  `json:"value_int"`
 	ValueStr string `json:"value_str"`
-	Ip       string `json:"ip"`
 	DeviceId string `json:"device_id"`
 	DataType string `json:"data_type"`
 }
