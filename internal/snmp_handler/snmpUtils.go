@@ -1,10 +1,8 @@
 package snmp_handler
 
 import (
-
 	"fmt"
 	"log"
-	"math/big"
 	"os"
 	"strconv"
 	"time"
@@ -15,47 +13,40 @@ import (
 
 
 type SnmpResultMessage struct{
-	Oid string
-	ValueStr string
-	ValueInt *big.Int
-	Type snmp.Asn1BER
+	Oid      string `json:"oid"`
+	ValueInt int64  `json:"value_int"`
+	ValueStr string `json:"value_str"`
+	Ip       string `json:"ip"`
+	DeviceId string `json:"device_id"`
+	DataType string `json:"data_type"`
 }
 
 type SnmpResultItems struct{
 	Items []SnmpResultMessage
+	DeviceId string
 }
 
+func (items *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU)  error {
 
-func (sn *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU)  error {
-
-	message := FormSnmpItem(pdu)
-
-	sn.Items = append(sn.Items, message)
+	item := FormSnmpResultItem(pdu)
+	item.DeviceId = items.DeviceId
+	items.Items = append(items.Items, item)
 
 	return nil
 
 }
 
-
 func (sn *SnmpResultItems) PrintValues()  {
-
-	for i , item := range sn.Items {
-		fmt.Println("I:", i,
-			           "Oid:", item.Oid,
-			           "Value str:", item.ValueStr,
-			           "Value int:", item.ValueInt,
-			           "Type:", item.Type,
-		            )
+	for _ , item := range sn.Items {
+		fmt.Println(item)
 	}
-
 }
 
+func SnmpBulkExecute(params model.SnmpSendParams) (SnmpResultItems, error) {
 
-func SnmpBulkExecute(sendParams model.SnmpSendParams) (SnmpResultItems, error) {
-
-	oid := sendParams.Oid
-	snmp.Default.Target    = sendParams.Ip
-	snmp.Default.Community = sendParams.Community
+	oid := params.Oid
+	snmp.Default.Target    = params.Ip
+	snmp.Default.Community = params.Community
 	snmp.Default.Timeout   = time.Duration(10 * time.Second)
 	err := snmp.Default.Connect()
 	if err != nil {
@@ -66,6 +57,7 @@ func SnmpBulkExecute(sendParams model.SnmpSendParams) (SnmpResultItems, error) {
 	defer snmp.Default.Conn.Close()
 
 	snmpResult := SnmpResultItems{}
+	snmpResult.DeviceId = params.DeviceId
 
 	err = snmp.Default.BulkWalk(oid, snmpResult.CollectValues)
 	if err != nil {
@@ -76,8 +68,51 @@ func SnmpBulkExecute(sendParams model.SnmpSendParams) (SnmpResultItems, error) {
 	return snmpResult, err
 }
 
+func FormSnmpResultItem(pdu snmp.SnmpPDU) SnmpResultMessage {
+
+	var valueStr string = ""
+	var valueInt int64 = 0
+	dataType := pdu.Type.String()
+	oid := pdu.Name
+	ip := snmp.Default.Target
+	deviceId := ""
+
+	switch pdu.Type {
+		case snmp.OctetString:
+			valueStr = string(pdu.Value.([]byte))
+		default:
+			valueInt = snmp.ToBigInt(pdu.Value).Int64()
+	}
+
+	item := SnmpResultMessage{
+         Ip : ip,
+         Oid: oid,
+         ValueInt:valueInt,
+         ValueStr:valueStr,
+         DataType:dataType,
+         DeviceId:deviceId,
+	}
+
+	return item
+}
+
+func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
+
+	resultItems, err := SnmpBulkExecute(params)
+	if err != nil {
+		panic("Snmp Send Error")
+	}
+
+	// resultItems.PrintValues()
+
+	return resultItems, nil
+}
 
 
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+///////////// GET REQUEST ////////////////////////////////////////
 
 func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 
@@ -109,54 +144,16 @@ func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 	sn := SnmpResultItems{}
 
 	for _, variable := range result.Variables {
-		message := FormSnmpItem(variable)
+		message := FormSnmpResultItem(variable)
 		sn.Items = append(sn.Items, message)
 	}
 
 	return sn, err
 }
 
+func GetRequestRun(params model.SnmpSendParams) {
 
-
-func FormSnmpItem(pdu snmp.SnmpPDU) SnmpResultMessage {
-
-	var valueStr string = ""
-	var valueInt *big.Int
-
-	switch pdu.Type {
-	case snmp.OctetString:
-		valueStr = string(pdu.Value.([]byte))
-	default:
-		valueInt = snmp.ToBigInt(pdu.Value)
-	}
-
-
-	item := SnmpResultMessage{
-		pdu.Name,
-		valueStr,
-		valueInt,
-		pdu.Type,
-	}
-
-	return item
-}
-
-
-func BulkRequestRun(sendParams model.SnmpSendParams) (SnmpResultItems, error) {
-
-	resultItems, err := SnmpBulkExecute(sendParams)
-	if err != nil {
-		panic("Snmp Send Error")
-	}
-
-	//resultItems.PrintValues()
-	return resultItems, nil
-}
-
-
-func GetRequestRun(sendParams model.SnmpSendParams) {
-
-	items, errGet := SnmpGetExecute(sendParams)
+	items, errGet := SnmpGetExecute(params)
 
 	if errGet != nil {
 		panic("Snmp Send Error")

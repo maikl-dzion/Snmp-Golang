@@ -3,6 +3,7 @@ package main
 import (
 	// "fmt"
 	// snmp_serv "../internal/snmp_handler"
+
 	rabbitmq "../internal/amqp_handler"
 	model "../internal/models"
 )
@@ -17,20 +18,28 @@ func main() {
 	rabbitmq.RecevieMessagesListFromQueue(amqpUrl, queueName)
 
 
-
+	//param := model.SnmpSendParams{
+	//	Ip:"190.169.1.5",
+	//	Oid:".1.3.6.1.4.1.119.2.3.69.501.7.1.1",
+	//	Community:"public",
+	//	Port:"161",
+	//	DeviceId:"",
+	//	SelCount:0,
+	//}
 
 	//param := model.SnmpSendParams{
-	//	"190.169.1.5",
-	//	".1.3.6.1.4.1.119.2.3.69.501.7.1.1",
-	//	"public",
-	//	"161",
-	//	0,
+	//	Ip:"192.168.2.184",
+	//	Oid:".1.3.6.1",
+	//	Community:"public",
+	//	Port:"161",
+	//	DeviceId:"677-MMMM-TTT",
+	//	SelCount:0,
 	//}
 	//
-	//snmp_serv.BulkRequestRun(param)
+	//r, err := snmp_serv.BulkRequestRun(param)
+	//fmt.Println(err)
+	//fmt.Println(r)
 
-	//
-	//
 	//param2 := model.SnmpSendParams{
 	//	"190.169.1.5",
 	//	".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.4.17",

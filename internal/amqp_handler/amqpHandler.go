@@ -24,41 +24,21 @@ type AmqpSendItems struct{
 	Items []AmqpSendItem
 }
 
-func MessagesListRendering(messages <-chan mq.Delivery) {
-
-	//port := "161"
-	//oid  := "1.3.6.1.2.1.1.1.0";
-	//ipAddress := "192.168.2.184"
-
-	sendParams := model.SnmpSendParams{
-		"192.168.2.184",
-		".1.3.6.1.2.1.1.1.0",
-		"public",
-		"161",
-		0,
-	}
-
-
-	// items := AmqpSendItems{}
-	ch    := 0
+func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSendParams) {
+	ch := 0
 	for msg := range messages {
 
-		amqpItem := FormAmqpItem(msg)
+		amqpItem := GetFormAmqpItem(msg)
 
 		//sendParams.Ip  = amqpItem.Ip
 		//sendParams.Oid = amqpItem.Oid
 
-		// items.Items = append(items.Items, res)
 		snmp_handl.BulkRequestRun(sendParams)
-
-
 		fmt.Println("I:", ch, "Mess:", amqpItem)
-
 		ch++
 	}
 
 }
-
 
 func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 
@@ -81,7 +61,7 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 
 	FailOnError(err, "Failed to declare a queue")
 
-	messages, err := channel.Consume(
+	messagesList, err := channel.Consume(
 		queue.Name,     // queue
 		"",    // consumer
 		true,   // auto-ack
@@ -93,7 +73,17 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 
 	FailOnError(err, "Failed to register a consumer")
 
-	MessagesListRendering(messages)
+
+	sendParams := model.SnmpSendParams{
+		Ip:"192.168.2.184",
+		Oid:".1.3.6.1",
+		Community:"public",
+		Port:"161",
+		DeviceId:"677-MMMM-TTT",
+		SelCount:0,
+	}
+
+	MessagesListRendering(messagesList, sendParams)
 
 	//forever := make(chan bool)
 	//
@@ -109,7 +99,6 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 	//<-forever
 
 }
-
 
 func RecevieGetMessageOne(amqpUrl string, queueName string) {
 
@@ -142,15 +131,13 @@ func RecevieGetMessageOne(amqpUrl string, queueName string) {
 
 }
 
-
 func FailOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
 	}
 }
 
-
-func FormAmqpItem(msg mq.Delivery) AmqpSendItem {
+func GetFormAmqpItem(msg mq.Delivery) AmqpSendItem {
 
 	item    := string(msg.Body)
 	message := strings.Split(item, " ")
@@ -199,13 +186,14 @@ func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 
 	for _, item := range res.Items {
 
-		messages = append(messages,
-			              model.ResponseMessage{
-							Oid:".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17",
-							Ip: "192.168.10.12 dff",
-							Value:"Тест 20456",
-							DeviceId: "234",
-					      })
+		//messages = append(messages,
+		//	              model.ResponseMessage{
+		//					Oid:".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17",
+		//					Ip: "192.168.10.12 dff",
+		//					Value:"Тест 20456",
+		//					DeviceId: "234",
+		//			      })
+		fmt.Println(item)
 
 	}
 
