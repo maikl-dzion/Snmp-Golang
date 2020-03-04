@@ -1,14 +1,16 @@
 package snmp_handler
 
 import (
-	model "../models"
+
 	"fmt"
-	snmp "github.com/soniah/gosnmp"
 	"log"
 	"math/big"
 	"os"
 	"strconv"
 	"time"
+
+	model "../models"
+	snmp "github.com/soniah/gosnmp"
 )
 
 
@@ -25,24 +27,6 @@ type SnmpResultItems struct{
 
 
 func (sn *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU)  error {
-
-	//var valueStr string = ""
-	//var valueInt *big.Int
-	//
-	//switch pdu.Type {
-	//	case snmp.OctetString:
-	//		valueStr = string(pdu.Value.([]byte))
-	//	default:
-	//		valueInt = snmp.ToBigInt(pdu.Value)
-	//}
-	//
-	//
-	//item := SnmpResultMessage{
-	//	pdu.Name,
-	//	valueStr,
-	//	valueInt,
-	//	pdu.Type,
-	//}
 
 	message := FormSnmpItem(pdu)
 
@@ -72,7 +56,7 @@ func SnmpBulkExecute(sendParams model.SnmpSendParams) (SnmpResultItems, error) {
 	oid := sendParams.Oid
 	snmp.Default.Target    = sendParams.Ip
 	snmp.Default.Community = sendParams.Community
-	snmp.Default.Timeout   = time.Duration(10 * time.Second) // Timeout better suited to walking
+	snmp.Default.Timeout   = time.Duration(10 * time.Second)
 	err := snmp.Default.Connect()
 	if err != nil {
 		fmt.Printf("Connect err: %v\n", err)
@@ -81,15 +65,15 @@ func SnmpBulkExecute(sendParams model.SnmpSendParams) (SnmpResultItems, error) {
 
 	defer snmp.Default.Conn.Close()
 
-	sn := SnmpResultItems{}
+	snmpResult := SnmpResultItems{}
 
-	err = snmp.Default.BulkWalk(oid, sn.CollectValues)
+	err = snmp.Default.BulkWalk(oid, snmpResult.CollectValues)
 	if err != nil {
 		fmt.Printf("Walk Error: %v\n", err)
 		os.Exit(1)
 	}
 
-	return sn, err
+	return snmpResult, err
 }
 
 
@@ -158,14 +142,15 @@ func FormSnmpItem(pdu snmp.SnmpPDU) SnmpResultMessage {
 }
 
 
-func BulkRequestRun(sendParams model.SnmpSendParams) {
+func BulkRequestRun(sendParams model.SnmpSendParams) (SnmpResultItems, error) {
 
 	resultItems, err := SnmpBulkExecute(sendParams)
 	if err != nil {
 		panic("Snmp Send Error")
 	}
 
-	resultItems.PrintValues()
+	//resultItems.PrintValues()
+	return resultItems, nil
 }
 
 
