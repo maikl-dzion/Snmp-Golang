@@ -88,24 +88,29 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 
 
 func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSendParams) {
+
 	ch := 0
 	saveApiUrl := model.SAVE_API_URL
 
 	for msg := range messages {
 
-		amqpItem := GetFormAmqpItem(msg)
+		amqpItem := GetFormAmqpItem(msg, sendParams)
 
 		//sendParams.Ip  = amqpItem.Ip
 		//sendParams.Oid = amqpItem.Oid
 
-		snmpResultList, err := snmp_handl.BulkRequestRun(sendParams)
+		snmp_handl.SnmpBulkRequestSend(sendParams, saveApiUrl)
 
-		if err != nil {
-			continue
-		}
+		//if err != nil {
+		//	continue
+		//}
 
-		MakeJsonRequest(saveApiUrl, snmpResultList)
-		fmt.Println("Num:", ch, "SnmpResultItem:", amqpItem)
+		// fmt.Println(err)
+
+		// MakeJsonRequest(saveApiUrl, snmpResultList)
+
+		fmt.Println("Num:", ch, "AmqpMessageItem:", amqpItem)
+
 		ch++
 
 	}
@@ -150,7 +155,7 @@ func FailOnError(err error, msg string) {
 	}
 }
 
-func GetFormAmqpItem(msg mq.Delivery) AmqpSendItem {
+func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) AmqpSendItem {
 
 	item    := string(msg.Body)
 	message := strings.Split(item, " ")
@@ -189,6 +194,7 @@ func MakeJsonRequest(apiUrl string, messages snmp_handl.SnmpResultItems) {
 	log.Println(_result)
 
 }
+
 
 func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 

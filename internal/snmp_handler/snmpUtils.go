@@ -1,8 +1,11 @@
 package snmp_handler
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -103,6 +106,7 @@ func FormSnmpResultItem(pdu snmp.SnmpPDU) SnmpResultMessage {
 	return item
 }
 
+
 func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 
 	resultItems, err := SnmpBulkExecute(params)
@@ -111,10 +115,52 @@ func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 	}
 
 	// resultItems.PrintValues()
-
 	return resultItems, nil
 }
 
+
+
+func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) error {
+
+
+	bytesRepresentation, err := json.Marshal(messages)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	resp, err := http.Post(apiUrl, "application/json",
+		bytes.NewBuffer(bytesRepresentation))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var _result map[string]interface{}
+
+	sendError := json.NewDecoder(resp.Body).Decode(&_result)
+
+	//log.Println(sendError)
+	//log.Println(_result)
+
+	return sendError
+
+}
+
+
+func SnmpBulkRequestSend(params model.SnmpSendParams, saveApiUrl string) error {
+
+	snmpItems, err := BulkRequestRun(params)
+
+	if err != nil {
+		panic("Snmp Send Error")
+	}
+
+	sendError := MakeJsonMultiRequest(saveApiUrl, snmpItems.Items)
+
+	fmt.Println(sendError)
+
+	return sendError
+
+}
 
 
 ///////////////////////////////////////////////////////////////////
