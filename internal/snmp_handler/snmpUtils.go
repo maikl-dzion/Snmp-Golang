@@ -37,8 +37,15 @@ func (items *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU)  error {
 }
 
 func (sn *SnmpResultItems) PrintValues()  {
-	for _ , item := range sn.Items {
-		fmt.Println(item)
+	for i , item := range sn.Items {
+		fmt.Println( "Ch::"    , i,
+			            "Oid::"   , item.Oid,
+			            "Ip::"    , item.Ip,
+			            "ValInt::", item.ValueInt,
+			            "ValStr::", item.ValueStr,
+						"DateType::", item.DataType,
+						"DeviceId::", item.DeviceId,
+		            )
 	}
 }
 

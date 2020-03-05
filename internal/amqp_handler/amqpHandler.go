@@ -25,7 +25,6 @@ type AmqpSendItems struct{
 }
 
 
-
 func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 
 	connect, err := mq.Dial(amqpUrl)
@@ -63,9 +62,10 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 	sendParams := model.SnmpSendParams{
 		Ip:"192.168.2.184",
 		Oid:".1.3.6.1",
+		// Oid:".1.3.6.1.2.1.1.9.1",
 		Community:"public",
 		Port:"161",
-		DeviceId:"677-MMMM-TTT",
+		DeviceId:"Pr-777-999",
 		SelCount:0,
 	}
 
@@ -107,6 +107,7 @@ func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSen
 		MakeJsonRequest(saveApiUrl, snmpResultList)
 		fmt.Println("Num:", ch, "SnmpResultItem:", amqpItem)
 		ch++
+
 	}
 
 }
@@ -180,16 +181,14 @@ func MakeJsonRequest(apiUrl string, messages snmp_handl.SnmpResultItems) {
 		log.Fatalln(err)
 	}
 
-	var result map[string]interface{}
+	var _result map[string]interface{}
 
-	json.NewDecoder(resp.Body).Decode(&result)
+	sendError := json.NewDecoder(resp.Body).Decode(&_result)
 
-	log.Println(result)
-	log.Println(result["data"])
+	log.Println(sendError)
+	log.Println(_result)
 
 }
-
-
 
 func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 
