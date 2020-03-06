@@ -94,12 +94,12 @@ func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSen
 
 	for msg := range messages {
 
-		amqpItem := GetFormAmqpItem(msg, sendParams)
+		amqpMessage := GetFormAmqpItem(msg, sendParams)
 
 		//sendParams.Ip  = amqpItem.Ip
 		//sendParams.Oid = amqpItem.Oid
 
-		snmp_handl.SnmpBulkRequestSend(sendParams, saveApiUrl)
+		snmp_handl.SnmpBulkRequestSend(amqpMessage, saveApiUrl)
 
 		//if err != nil {
 		//	continue
@@ -109,7 +109,7 @@ func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSen
 
 		// MakeJsonRequest(saveApiUrl, snmpResultList)
 
-		fmt.Println("Num:", ch, "AmqpMessageItem:", amqpItem)
+		fmt.Println("Num:", ch, "AmqpMessageItem:", amqpMessage)
 
 		ch++
 
@@ -155,19 +155,24 @@ func FailOnError(err error, msg string) {
 	}
 }
 
-func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) AmqpSendItem {
+func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.SnmpSendParams {
 
 	item    := string(msg.Body)
 	message := strings.Split(item, " ")
 
-	sendItem := AmqpSendItem {
-		Id  : message[0],
-		Ip  : message[1],
-		Oid : message[2],
-		Port: message[3],
-	}
+	//sendItem := AmqpSendItem {
+	//	Id  : message[0],
+	//	Ip  : message[1],
+	//	Oid : message[2],
+	//	Port: message[3],
+	//}
 
-	return sendItem;
+	sendParams.Id   = message[0]
+	//sendParams.Ip   = message[1]
+	//sendParams.Oid  = message[2]
+	sendParams.Port = message[3]
+
+	return sendParams;
 
 }
 
