@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"../models"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/k-sone/snmpgo"
+	"github.com/maikl-dzion/Snmp-Golang/internal/models"
 	"log"
 	"net/http"
 	"sync"

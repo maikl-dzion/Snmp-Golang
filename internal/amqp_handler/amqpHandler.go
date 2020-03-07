@@ -8,22 +8,21 @@ import (
 	"net/http"
 	"strings"
 
-	model "../models"
+	model "github.com/maikl-dzion/Snmp-Golang/internal/models"
+	snmp_handl "github.com/maikl-dzion/Snmp-Golang/internal/snmp_handler"
 	mq "github.com/streadway/amqp"
-	snmp_handl "../snmp_handler"
 )
 
-type AmqpSendItem struct{
-	Oid string
-	Ip string
-	Id string
+type AmqpSendItem struct {
+	Oid  string
+	Ip   string
+	Id   string
 	Port string
 }
 
-type AmqpSendItems struct{
+type AmqpSendItems struct {
 	Items []AmqpSendItem
 }
-
 
 func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 
@@ -36,39 +35,40 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
-		queueName,       // name
-		false,    // durable
-		false,  // delete when unused
-		false,   // exclusive
-		false,    // no-wait
-		nil,        // arguments
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 
 	FailOnError(err, "Failed to declare a queue")
 
 	messagesList, err := channel.Consume(
-		queue.Name,     // queue
-		"",    // consumer
-		true,   // auto-ack
-		false, // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,      // args
+		queue.Name, // queue
+		"",         // consumer
+		true,       // auto-ack
+		false,      // exclusive
+		false,      // no-local
+		false,      // no-wait
+		nil,        // args
 	)
 
 	FailOnError(err, "Failed to register a consumer")
 
-
 	sendParams := model.SnmpSendParams{
-		Ip:"192.168.2.184",
-		Oid:".1.3.6.1",
+		Ip:  "192.168.2.184",
+		Oid: ".1.3.6.1",
 		// Oid:".1.3.6.1.2.1.1.9.1",
-		Community:"public",
-		Port:"161",
-		DeviceId:"Pr-777-999",
-		SelCount:0,
+		Community: "public",
+		Port:      "161",
+		DeviceId:  "Pr-777-999",
+		SelCount:  0,
 	}
 
+
+	// fmt.Println(sendParams)
 	MessagesListRendering(messagesList, sendParams)
 
 	//forever := make(chan bool)
@@ -85,7 +85,6 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 	//<-forever
 
 }
-
 
 func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSendParams) {
 
@@ -117,7 +116,6 @@ func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSen
 
 }
 
-
 func RecevieGetMessageOne(amqpUrl string, queueName string) {
 
 	connect, err := mq.Dial(amqpUrl)
@@ -129,17 +127,17 @@ func RecevieGetMessageOne(amqpUrl string, queueName string) {
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
-		queueName,  // name
-		false,      // durable
-		false,    // delete when unused
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
 		false,     // exclusive
-		false,      // no-wait
-		nil,          // arguments
+		false,     // no-wait
+		nil,       // arguments
 	)
 
 	FailOnError(err, "Failed to declare a queue")
 
-	resultMessage , _ , err := channel.Get(queue.Name, true)
+	resultMessage, _, err := channel.Get(queue.Name, true)
 
 	FailOnError(err, "Failed to register a consumer")
 
@@ -157,7 +155,7 @@ func FailOnError(err error, msg string) {
 
 func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.SnmpSendParams {
 
-	item    := string(msg.Body)
+	item := string(msg.Body)
 	message := strings.Split(item, " ")
 
 	//sendItem := AmqpSendItem {
@@ -168,17 +166,15 @@ func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.Snm
 	//}
 
 	sendParams.Id   = message[0]
-	//sendParams.Ip   = message[1]
-	//sendParams.Oid  = message[2]
+	sendParams.Ip   = message[1]
+	sendParams.Oid  = message[2]
 	sendParams.Port = message[3]
 
-	return sendParams;
+	return sendParams
 
 }
 
-
 func MakeJsonRequest(apiUrl string, messages snmp_handl.SnmpResultItems) {
-
 
 	bytesRepresentation, err := json.Marshal(messages.Items)
 	if err != nil {
@@ -186,7 +182,7 @@ func MakeJsonRequest(apiUrl string, messages snmp_handl.SnmpResultItems) {
 	}
 
 	resp, err := http.Post(apiUrl, "application/json",
-		                   bytes.NewBuffer(bytesRepresentation))
+		bytes.NewBuffer(bytesRepresentation))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -199,7 +195,6 @@ func MakeJsonRequest(apiUrl string, messages snmp_handl.SnmpResultItems) {
 	log.Println(_result)
 
 }
-
 
 func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 

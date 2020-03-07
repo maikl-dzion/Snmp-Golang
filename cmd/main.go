@@ -1,19 +1,18 @@
 package main
 
 import (
-
-	rabbitmq "../internal/amqp_handler"
-	model "../internal/models"
+	amqp "github.com/maikl-dzion/Snmp-Golang/internal/amqp_handler"
+	model "github.com/maikl-dzion/Snmp-Golang/internal/models"
 )
 
-
-// snmpbulkget -v2c -Cn0 -Cr5 -c public 190.169.1.5 .1.3.6.1.4.1.119.2.3.69.501.7
 
 func main() {
 
 	queueName := model.QUEUE_NAME
 	amqpUrl   := model.AMQP_API_URL
 
-	rabbitmq.RecevieMessagesListFromQueue(amqpUrl, queueName)
+	amqp.RecevieMessagesListFromQueue(amqpUrl, queueName)
+
+	// fmt.Println(queueName, amqpUrl)
 
 }
