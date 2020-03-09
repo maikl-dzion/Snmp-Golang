@@ -13,19 +13,8 @@ import (
 	snmp_handl "../snmp_handler"
 )
 
-type AmqpSendItem struct{
-	Oid string
-	Ip string
-	Id string
-	Port string
-}
 
-type AmqpSendItems struct{
-	Items []AmqpSendItem
-}
-
-
-func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
+func RecevieMessagesListFromQueue(amqpUrl string, queueName string, saveApiUrl string) {
 
 	connect, err := mq.Dial(amqpUrl)
 	FailOnError(err, "Failed to connect to RabbitMQ")
@@ -69,53 +58,64 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string) {
 		SelCount:0,
 	}
 
-	MessagesListRendering(messagesList, sendParams)
 
-	//forever := make(chan bool)
-	//
-	//
-	//for a := 0; a < 10; a++ {
-	//	go MessagesRendering(messages)
-	//}
-	//
-	//
-	//log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-	//
-	//
-	//<-forever
+	streamCount := 10
+
+	forever := make(chan bool)
+
+	for a := 0; a < streamCount; a++ {
+		go MessagesListRendering(messagesList, sendParams, saveApiUrl)
+	}
+
+	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+
+	<-forever
 
 }
 
 
-func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSendParams) {
+func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSendParams, saveApiUrl string) {
 
 	ch := 0
-	saveApiUrl := model.SAVE_API_URL
-
 	for msg := range messages {
 
-		amqpMessage := GetFormAmqpItem(msg, sendParams)
+		amqpMessage := GetFormAmqpItem(msg, sendParams)  // Формируем данные для запроса
 
-		//sendParams.Ip  = amqpItem.Ip
-		//sendParams.Oid = amqpItem.Oid
-
-		snmp_handl.SnmpBulkRequestSend(amqpMessage, saveApiUrl)
-
-		//if err != nil {
-		//	continue
-		//}
-
-		// fmt.Println(err)
-
-		// MakeJsonRequest(saveApiUrl, snmpResultList)
+		snmp_handl.SnmpBulkRequestSend(amqpMessage, saveApiUrl) // Выполняем запрос
 
 		fmt.Println("Num:", ch, "AmqpMessageItem:", amqpMessage)
 
 		ch++
-
 	}
 
 }
+
+
+func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.SnmpSendParams {
+
+	item    := string(msg.Body)
+	message := strings.Split(item, " ")
+
+	sendParams.Id   = message[0] // MessageId
+	sendParams.Ip   = message[1] // Ip Address
+	sendParams.Oid  = message[2] // Oid
+	sendParams.Port = message[3]
+
+	return sendParams;
+
+}
+
+
+func FailOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
+}
+
+
+
+//////////////////////////////////
+//////////////////////////////////
 
 
 func RecevieGetMessageOne(amqpUrl string, queueName string) {
@@ -148,34 +148,6 @@ func RecevieGetMessageOne(amqpUrl string, queueName string) {
 	fmt.Println(message)
 
 }
-
-func FailOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
-}
-
-func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.SnmpSendParams {
-
-	item    := string(msg.Body)
-	message := strings.Split(item, " ")
-
-	//sendItem := AmqpSendItem {
-	//	Id  : message[0],
-	//	Ip  : message[1],
-	//	Oid : message[2],
-	//	Port: message[3],
-	//}
-
-	sendParams.Id   = message[0]
-	sendParams.Ip   = message[1]
-	sendParams.Oid  = message[2]
-	sendParams.Port = message[3]
-
-	return sendParams;
-
-}
-
 
 func MakeJsonRequest(apiUrl string, messages snmp_handl.SnmpResultItems) {
 

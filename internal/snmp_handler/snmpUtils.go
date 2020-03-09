@@ -114,6 +114,7 @@ func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 		panic("Snmp Send Error")
 	}
 
+	fmt.Println("Snmp Request:OK")
 	// resultItems.PrintValues()
 	return resultItems, nil
 }
@@ -140,6 +141,7 @@ func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) error {
 
 	//log.Println(sendError)
 	//log.Println(_result)
+	fmt.Println("Send json:OK")
 
 	return sendError
 
