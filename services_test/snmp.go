@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	realQuery := true
+	realQuery := false
 
 	param := model.SnmpSendParams{
 		Ip:"192.168.2.184",

@@ -59,11 +59,9 @@ var events = allEvents{
 }
 
 
-
 func homeLink(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome home!")
 }
-
 
 func createEvent(w http.ResponseWriter, r *http.Request) {
 	var newEvent event
