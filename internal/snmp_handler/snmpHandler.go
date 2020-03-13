@@ -8,7 +8,7 @@ import (
 	st "strings"
 	"time"
 
-	model "../models"
+	model "Snmp-Golang/internal/models"
 	snmp "github.com/soniah/gosnmp"
 )
 

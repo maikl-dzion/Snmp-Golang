@@ -1,5 +1,9 @@
 package model
 
+import (
+	"fmt"
+	"time"
+)
 type ResponseMessage struct {
 	Oid      string `json:"oid"`
 	Value    string `json:"value"`
@@ -48,4 +52,23 @@ type SnmpSendParams struct {
 	Port string
 	SelCount int
 	DeviceId string
+}
+
+
+
+func DatetimePrint() {
+	t := time.Now()
+	formatted := fmt.Sprintf("%d-%02d-%02d__%02d:%02d:%02d",
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+	fmt.Println("DateTime->", formatted)
+}
+
+
+func LogPrint(data interface{}, name string) {
+	if name != ""{
+		fmt.Println(name, data)
+	} else {
+		fmt.Println(data)
+	}
 }

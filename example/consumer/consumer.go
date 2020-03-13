@@ -63,7 +63,6 @@ type ResponseMessage struct {
 //}
 
 
-
 func AmqpFullInit(amqpApiUrl string, queueParams QueueInitParams) (amqp.Queue, error) {
 
 
@@ -88,15 +87,11 @@ func AmqpFullInit(amqpApiUrl string, queueParams QueueInitParams) (amqp.Queue, e
 
 }
 
-
-
 func FailOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
 	}
 }
-
-
 
 func AmqpInitialize(amqpApiUrl string) (*amqp.Channel, error) {
 
@@ -113,7 +108,6 @@ func AmqpInitialize(amqpApiUrl string) (*amqp.Channel, error) {
 
 }
 
-
 func QueueDeclareInit(ch *amqp.Channel, queueParams QueueInitParams) (amqp.Queue, error) {
 
 	queue, err := ch.QueueDeclare(
@@ -127,7 +121,6 @@ func QueueDeclareInit(ch *amqp.Channel, queueParams QueueInitParams) (amqp.Queue
 
 	return queue, err
 }
-
 
 //func RespMessagesInit() *[]ResponseMessage {
 //	var messages []ResponseMessage

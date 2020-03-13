@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	model "../models"
+	model "Snmp-Golang/internal/models"
 	snmp "github.com/soniah/gosnmp"
 )
 
@@ -33,10 +33,9 @@ func (items *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU)  error {
 
 	item := FormSnmpResultItem(pdu)
 	item.DeviceId = items.DeviceId
-	items.Items = append(items.Items, item)
+	items.Items   = append(items.Items, item)
 
 	return nil
-
 }
 
 func (sn *SnmpResultItems) PrintValues()  {
@@ -115,6 +114,7 @@ func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 	}
 
 	fmt.Println("Snmp Request:OK")
+	fmt.Println("Snmp Items Len:", len(resultItems.Items))
 	// resultItems.PrintValues()
 	return resultItems, nil
 }
@@ -141,7 +141,7 @@ func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) error {
 
 	//log.Println(sendError)
 	//log.Println(_result)
-	fmt.Println("Send json:OK")
+	fmt.Println("Send Json in Postgres:OK; SendError : ", sendError)
 
 	return sendError
 
@@ -149,6 +149,7 @@ func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) error {
 
 
 func SnmpBulkRequestSend(params model.SnmpSendParams, saveApiUrl string) error {
+
 
 	snmpItems, err := BulkRequestRun(params)
 
@@ -158,11 +159,61 @@ func SnmpBulkRequestSend(params model.SnmpSendParams, saveApiUrl string) error {
 
 	sendError := MakeJsonMultiRequest(saveApiUrl, snmpItems.Items)
 
-	fmt.Println(sendError)
+	// fmt.Println(sendError)
+	datetimePrint()
 
 	return sendError
 
 }
+
+
+func datetimePrint() {
+	t := time.Now()
+	formatted := fmt.Sprintf("%d-%02d-%02d__%02d:%02d:%02d",
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+	fmt.Println(formatted)
+}
+
+
+
+func WalkGetAllRun(param model.SnmpSendParams) (SnmpResultItems, error) {
+
+
+	results := SnmpResultItems{}
+
+	snmp.Default.Target    = param.Ip
+	snmp.Default.Community = param.Community
+	oid := param.Oid
+
+	err := snmp.Default.Connect()
+	if err != nil {
+		fmt.Printf("Snmp Connect Error: %v", err)
+	}
+
+	defer snmp.Default.Conn.Close()
+
+
+	snmpResults, err := snmp.Default.WalkAll(oid)
+
+	if err != nil {
+		fmt.Printf("Snmp WalkFunction Error: %v", err)
+	}
+
+	ch := 0
+	for _, msg := range snmpResults {
+
+		results.CollectValues(msg)
+		// model.LogPrint(ch, "Number->")
+		// model.DatetimePrint()
+		ch++
+	}
+
+	model.LogPrint(ch, "Snmp Result Count:")
+
+    return results, nil
+}
+
 
 
 ///////////////////////////////////////////////////////////////////
