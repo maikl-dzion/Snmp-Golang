@@ -4,41 +4,16 @@ import (
 	"fmt"
 	"time"
 )
-type ResponseMessage struct {
-	Oid      string `json:"oid"`
-	Value    string `json:"value"`
-	Ip       string `json:"ip"`
-	DeviceId string `json:"device_id"`
-}
 
-type ResponseJsonItems []ResponseMessage
-
-
-//type SnmpResponseMessage struct {
+//type ResponseMessage struct {
 //	Oid      string `json:"oid"`
-//	ValueInt string `json:"value_int"`
-//	ValueStr string `json:"value_str"`
+//	Value    string `json:"value"`
 //	Ip       string `json:"ip"`
 //	DeviceId string `json:"device_id"`
 //}
 //
-//
-//
-//type SnmpResponseMessagesList struct {
-//	Items []SnmpResponseMessage
-//}
+//type ResponseJsonItems []ResponseMessage
 
-//func NewSnmpResponseMessagesList(items []SnmpResponseMessage) *SnmpResponseMessagesList {
-//	return &SnmpResponseMessagesList{Items: items}
-//}
-
-//func (resp *ResponseJsonItems) SetJsonItem(ip, oid, value, deviceId, dateType string)  (error) {
-//
-//	resp.Items = append(resp.Items, ResponseMessage{Oid: oid,Ip : ip,Value:value,DeviceId: deviceId})
-//
-//	return nil
-//
-//}
 
 const QUEUE_NAME   = "SNMP_QUEUE"
 const AMQP_API_URL = "amqp://tester:12345@172.16.16.235:5672/"
@@ -55,6 +30,8 @@ type SnmpSendParams struct {
 }
 
 
+/////////////////////////////////////
+// ---- Вспомогательные функции ----
 
 func DatetimePrint() {
 	t := time.Now()
