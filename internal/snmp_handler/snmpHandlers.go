@@ -58,8 +58,10 @@ func (sn *SnmpResultItems) PrintValues()  {
 ////////////////////////////////////////
 
 ///////////////////////////////////////////////////
-// Запускаем snmp-query
-// и записываем результат в базу
+/************************************************
+     ФУНКЦИЯ ЗАПУСКА SNMP - ЗАПРОСА
+     И СОХРАНЕНИЯ РЕЗУЛЬТАТА В БАЗУ
+************************************************/
 
 func SnmpStart(params model.SnmpSendParams, saveApiUrl string, funcType string) error {
 
@@ -79,10 +81,11 @@ func SnmpStart(params model.SnmpSendParams, saveApiUrl string, funcType string) 
 
 
 ////////////////////////////////////////
-//**************************************
-// ФУНКЦИИ ДЛЯ ВЫПОЛНЕНИЯ SNMP - ЗАПРОСА
+/**************************************
+  ФУНКЦИИ ДЛЯ ВЫПОЛНЕНИЯ SNMP - ЗАПРОСА
+****************************************/
 
-//____ GetRequestRun ___
+//____ GetRequestRun ___Основная функция snmp - запроса
 func SnmpRequestRun(params model.SnmpSendParams, funcType string) (SnmpResultItems, error) {
 
 	oid := params.Oid
@@ -135,10 +138,6 @@ func SnmpRequestRun(params model.SnmpSendParams, funcType string) (SnmpResultIte
 			}
 	}
 
-	//if errSnmp != nil {
-	//	fmt.Printf("Snmp Func Error: %v\n", errSnmp)
-	//	os.Exit(1)
-	//}
 
 	snmpResult.DeviceId = params.DeviceId
 

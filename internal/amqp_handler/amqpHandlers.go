@@ -250,7 +250,6 @@ func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType string) {
 		for {
 
 			message, stateOk, err := channel.Get(queue.Name, true)
-
 			if err != nil {
 				fmt.Println("Message GetFunc :", err)
 			}
@@ -260,13 +259,10 @@ func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType string) {
 			} else {
 				fmt.Println("Message GetFunc Not Ok :", stateOk)
 			}
-
 		}
 	}
 
-
 	// messagesList, _status, err := channel.Get(queue.Name, true)
-
 }
 
 
@@ -285,7 +281,6 @@ func QueueMessagesListRender(messagesList <-chan mq.Delivery,
 	}
 
 }
-
 
 func QueueMessageExec(msg mq.Delivery, sendParams model.SnmpSendParams, saveApiUrl string)  {
 
