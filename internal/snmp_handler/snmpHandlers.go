@@ -19,7 +19,7 @@ import (
    СТРУКТУРА ДЛЯ СОХРАНЕНИЯ РЕЗУЛЬТАТОВ
            SNMP - ЗАПРОСА
 *************************************/
-type SnmpResultMessage struct{
+type SnmpResultMessage struct {
 	Oid      string `json:"oid"`
 	Ip       string `json:"ip"`
 	ValueInt int64  `json:"value_int"`
@@ -28,29 +28,31 @@ type SnmpResultMessage struct{
 	DataType string `json:"data_type"`
 }
 
-type SnmpResultItems struct{
-	Items []SnmpResultMessage
+type SnmpResultItems struct {
+	Items    []SnmpResultMessage
 	DeviceId string
+	Ip string
 }
 
-func (items *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU)  error {
+func (r *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU) error {
 
 	item := FormSnmpResultItem(pdu)
-	item.DeviceId = items.DeviceId
-	items.Items   = append(items.Items, item)
+	item.DeviceId = r.DeviceId
+	item.Ip = r.Ip
+	r.Items = append(r.Items, item)
 
 	return nil
 }
 
-func (sn *SnmpResultItems) PrintValues()  {
-	for i , item := range sn.Items {
-		fmt.Println( "[Ch]=", i,
-			            "[Oid]=", item.Oid,
-			            "[Ip]=" , item.Ip,
-			            "[ValInt]=", item.ValueInt,
-			            "[ValStr]=", item.ValueStr,
-			            "[DateType]=", item.DataType,
-						"[DeviceId]=", item.DeviceId,)
+func (items *SnmpResultItems) PrintValues() {
+	for i, item := range items.Items {
+		fmt.Println("[Ch]=", i,
+			"[Oid]=", item.Oid,
+			"[Ip]=", item.Ip,
+			"[ValInt]=", item.ValueInt,
+			"[ValStr]=", item.ValueStr,
+			"[DateType]=", item.DataType,
+			"[DeviceId]=", item.DeviceId)
 	}
 }
 
@@ -65,7 +67,7 @@ func (sn *SnmpResultItems) PrintValues()  {
 
 func SnmpStart(params model.SnmpSendParams, saveApiUrl string, funcType string) error {
 
-	response , err := SnmpRequestRun(params, funcType)
+	response, err := SnmpRequestRun(params, funcType)
 	if err != nil {
 		fmt.Println("Error: SnmpRequestRun function", err)
 		os.Exit(1)
@@ -80,6 +82,20 @@ func SnmpStart(params model.SnmpSendParams, saveApiUrl string, funcType string) 
 }
 
 
+func SnmpNewStart(params model.SnmpSendParams, saveApiUrl string, funcType string) error {
+
+	response, err := SnmpManagerStart(params, funcType)
+	if err != nil {
+		fmt.Println("Error: SnmpRequestRun function", err)
+		os.Exit(1)
+		return err
+	}
+
+	var saveError = MakeJsonMultiRequest(saveApiUrl, response.Items)
+	datetimePrint()
+	return saveError
+}
+
 ////////////////////////////////////////
 /**************************************
   ФУНКЦИИ ДЛЯ ВЫПОЛНЕНИЯ SNMP - ЗАПРОСА
@@ -89,10 +105,10 @@ func SnmpStart(params model.SnmpSendParams, saveApiUrl string, funcType string) 
 func SnmpRequestRun(params model.SnmpSendParams, funcType string) (SnmpResultItems, error) {
 
 	oid := params.Oid
-	snmp.Default.Target    = params.Ip
+	snmp.Default.Target = params.Ip
 	snmp.Default.Community = params.Community
-	snmp.Default.Timeout   = time.Duration(10 * time.Second)
-	snmp.Default.Version   = snmp.Version2c
+	snmp.Default.Timeout = time.Duration(10 * time.Second)
+	snmp.Default.Version = snmp.Version2c
 	errConnect := snmp.Default.Connect()
 	if errConnect != nil {
 		fmt.Printf("Snmp Connect Error: %v\n", errConnect)
@@ -102,44 +118,43 @@ func SnmpRequestRun(params model.SnmpSendParams, funcType string) (SnmpResultIte
 	defer snmp.Default.Conn.Close()
 
 	snmpResult := SnmpResultItems{}
+	snmpResult.DeviceId = params.DeviceId
+	snmpResult.Ip = params.Ip
 
 	switch funcType {
-		case "get":
-			oids := []string{oid}
-			items, err := snmp.Default.Get(oids)
-			if err != nil {
-				return snmpResult, err
-			}
+	case "GET":
+		oids := []string{oid}
+		items, err := snmp.Default.Get(oids)
+		if err != nil {
+			return snmpResult, err
+		}
 
-			for _, pdu := range items.Variables {
-				snmpResult.CollectValues(pdu)
-			}
+		for _, pdu := range items.Variables {
+			snmpResult.CollectValues(pdu)
+		}
 
-		case "bulk":
-			err := snmp.Default.BulkWalk(oid, snmpResult.CollectValues)
-			if err != nil {
-				return snmpResult, err
-			}
+	case "BULK":
+		err := snmp.Default.BulkWalk(oid, snmpResult.CollectValues)
+		if err != nil {
+			return snmpResult, err
+		}
 
-		case "walk_all":
-			resItems, err := snmp.Default.WalkAll(oid)
-			if err != nil {
-				return snmpResult, err
-			}
+	case "WALK_ALL":
+		resItems, err := snmp.Default.WalkAll(oid)
+		if err != nil {
+			return snmpResult, err
+		}
 
-			for _, msg := range resItems {
-				snmpResult.CollectValues(msg)
-			}
+		for _, msg := range resItems {
+			snmpResult.CollectValues(msg)
+		}
 
-	    default:
-			err := snmp.Default.BulkWalk(oid, snmpResult.CollectValues)
-			if err != nil {
-				return snmpResult, err
-			}
+	default:
+		err := snmp.Default.BulkWalk(oid, snmpResult.CollectValues)
+		if err != nil {
+			return snmpResult, err
+		}
 	}
-
-
-	snmpResult.DeviceId = params.DeviceId
 
 	ch := len(snmpResult.Items)
 	model.LogPrint(ch, "Snmp Items Count:")
@@ -151,9 +166,9 @@ func SnmpRequestRun(params model.SnmpSendParams, funcType string) (SnmpResultIte
 func SnmpBulkExecute(params model.SnmpSendParams) (SnmpResultItems, error) {
 
 	oid := params.Oid
-	snmp.Default.Target    = params.Ip
+	snmp.Default.Target = params.Ip
 	snmp.Default.Community = params.Community
-	snmp.Default.Timeout   = time.Duration(10 * time.Second)
+	snmp.Default.Timeout = time.Duration(10 * time.Second)
 	err := snmp.Default.Connect()
 	if err != nil {
 		fmt.Printf("Connect err: %v\n", err)
@@ -182,7 +197,7 @@ func SnmpWalkAllExecute(param model.SnmpSendParams) (SnmpResultItems, error) {
 
 	results := SnmpResultItems{}
 
-	snmp.Default.Target    = param.Ip
+	snmp.Default.Target = param.Ip
 	snmp.Default.Community = param.Community
 	oid := param.Oid
 
@@ -212,7 +227,6 @@ func SnmpWalkAllExecute(param model.SnmpSendParams) (SnmpResultItems, error) {
 	return results, nil
 }
 
-
 //____ Get ___
 func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 
@@ -235,7 +249,7 @@ func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 	defer params.Conn.Close()
 
 	oids := []string{send.Oid}
-	result, errRequest := params.Get(oids)  // Get() accepts up to g.MAX_OIDS
+	result, errRequest := params.Get(oids) // Get() accepts up to g.MAX_OIDS
 	if errRequest != nil {
 		log.Fatalf("Get() err: %v", errRequest)
 	}
@@ -253,35 +267,33 @@ func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 //********************************************
 //////////////////////////////////////////////
 
-
 func FormSnmpResultItem(pdu snmp.SnmpPDU) SnmpResultMessage {
 
 	var valueStr string = ""
 	var valueInt int64 = 0
 	dataType := pdu.Type.String()
 	oid := pdu.Name
-	ip := snmp.Default.Target
+	ip  := snmp.Default.Target
 	deviceId := ""
 
 	switch pdu.Type {
-		case snmp.OctetString:
-			valueStr = string(pdu.Value.([]byte))
-		default:
-			valueInt = snmp.ToBigInt(pdu.Value).Int64()
+	case snmp.OctetString:
+		valueStr = string(pdu.Value.([]byte))
+	default:
+		valueInt = snmp.ToBigInt(pdu.Value).Int64()
 	}
 
 	item := SnmpResultMessage{
-         Ip : ip,
-         Oid: oid,
-         ValueInt:valueInt,
-         ValueStr:valueStr,
-         DataType:dataType,
-         DeviceId:deviceId,
+		Ip:       ip,
+		Oid:      oid,
+		ValueInt: valueInt,
+		ValueStr: valueStr,
+		DataType: dataType,
+		DeviceId: deviceId,
 	}
 
 	return item
 }
-
 
 func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 
@@ -295,8 +307,6 @@ func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 	// resultItems.PrintValues()
 	return resultItems, nil
 }
-
-
 
 func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) error {
 
@@ -335,7 +345,6 @@ func SnmpBulkRequestSend(params model.SnmpSendParams, saveApiUrl string) error {
 	return sendError
 }
 
-
 func datetimePrint() {
 	t := time.Now()
 	formatted := fmt.Sprintf("%d-%02d-%02d__%02d:%02d:%02d",
@@ -363,6 +372,3 @@ func GetRequestRun(params model.SnmpSendParams) {
 	}
 	items.PrintValues()
 }
-
-
-

@@ -25,41 +25,39 @@ func RecevieMessagesListFromQueue(amqpUrl string, queueName string, saveApiUrl s
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
-		queueName,       // name
-		false,    // durable
-		false,  // delete when unused
-		false,   // exclusive
-		false,    // no-wait
-		nil,        // arguments
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 
 	FailOnError(err, "Failed to declare a queue")
 
 	messagesList, err := channel.Consume(
-		queue.Name,     // queue
-		"",    // consumer
-		true,   // auto-ack
-		false, // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,      // args
+		queue.Name, // queue
+		"",         // consumer
+		true,       // auto-ack
+		false,      // exclusive
+		false,      // no-local
+		false,      // no-wait
+		nil,        // args
 	)
 
 	// messagesList, _status, err := channel.Get(queue.Name, true)
 
 	FailOnError(err, "Failed to register a consumer")
 
-
 	sendParams := model.SnmpSendParams{
-		Ip:"192.168.2.184",
-		Oid:".1.3.6.1",
+		Ip:  "192.168.2.184",
+		Oid: ".1.3.6.1",
 		// Oid:".1.3.6.1.2.1.1.9.1",
-		Community:"public",
-		Port:"161",
-		DeviceId:"Pr-777-999",
-		SelCount:0,
+		Community: "public",
+		Port:      "161",
+		DeviceId:  "Pr-777-999",
+		SelCount:  0,
 	}
-
 
 	//fmt.Println(string(messagesList.Body))
 	//fmt.Println(sendParams)
@@ -86,7 +84,7 @@ func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSen
 	ch := 0
 	for msg := range messages {
 
-		amqpMessage := GetFormAmqpItem(msg, sendParams)  // Формируем данные для запроса
+		amqpMessage := GetFormAmqpItem(msg, sendParams) // Формируем данные для запроса
 
 		snmp_handl.SnmpBulkRequestSend(amqpMessage, saveApiUrl) // Выполняем запрос
 
@@ -99,15 +97,15 @@ func MessagesListRendering(messages <-chan mq.Delivery, sendParams model.SnmpSen
 
 func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.SnmpSendParams {
 
-	item    := string(msg.Body)
+	item := string(msg.Body)
 	message := strings.Split(item, " ")
 
-	sendParams.Id   = message[0] // MessageId
+	sendParams.Id = message[0] // MessageId
 	//sendParams.Ip   = message[1] // Ip Address
 	//sendParams.Oid  = message[2] // Oid
 	sendParams.Port = message[3]
 
-	return sendParams;
+	return sendParams
 }
 
 func FailOnError(err error, msg string) {
@@ -130,17 +128,17 @@ func RecevieGetMessageOne(amqpUrl string, queueName string) {
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
-		queueName,  // name
-		false,      // durable
-		false,    // delete when unused
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
 		false,     // exclusive
-		false,      // no-wait
-		nil,          // arguments
+		false,     // no-wait
+		nil,       // arguments
 	)
 
 	FailOnError(err, "Failed to declare a queue")
 
-	resultMessage , _ , err := channel.Get(queue.Name, true)
+	resultMessage, _, err := channel.Get(queue.Name, true)
 
 	FailOnError(err, "Failed to register a consumer")
 
@@ -173,7 +171,6 @@ func MakeJsonRequest(apiUrl string, messages snmp_handl.SnmpResultItems) {
 
 }
 
-
 func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 
 	saveApiUrl := model.SAVE_API_URL
@@ -196,7 +193,6 @@ func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 
 }
 
-
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 ///    NEW MESSAGES RENDER    ////////////////
@@ -218,25 +214,25 @@ func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType string) {
 	}
 
 	sendParams := model.SnmpSendParams{
-		Ip:"192.168.2.184",
-		Oid:".1.3.6.1",
+		Ip:  "192.168.2.184",
+		Oid: ".1.3.6.1",
 		// Oid:".1.3.6.1.2.1.1.9.1",
-		Community:"public",
-		Port:"161",
-		DeviceId:"Pr-777-999",
-		SelCount:0,
+		Community: "public",
+		Port:      "161",
+		DeviceId:  "Pr-777-999",
+		SelCount:  0,
 	}
 
 	if selectType == "consumer" {
 
 		messagesList, errCon := channel.Consume(
-			queue.Name,     // queue
-			"",    // consumer
-			true,   // auto-ack
-			false, // exclusive
-			false,  // no-local
-			false,  // no-wait
-			nil,      // args
+			queue.Name, // queue
+			"",         // consumer
+			true,       // auto-ack
+			false,      // exclusive
+			false,      // no-local
+			false,      // no-wait
+			nil,        // args
 		)
 
 		if errCon != nil {
@@ -265,35 +261,26 @@ func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType string) {
 	// messagesList, _status, err := channel.Get(queue.Name, true)
 }
 
-
 func QueueMessagesListRender(messagesList <-chan mq.Delivery,
-	                         sendParams   model.SnmpSendParams,
-	                         saveApiUrl   string) {
-
+	                         sendParams model.SnmpSendParams,
+	                         saveApiUrl string) {
 	ch := 0
 	for msg := range messagesList {
-
 		QueueMessageExec(msg, sendParams, saveApiUrl)
-
 		fmt.Println("Num:", ch)
 		ch++
-
 	}
-
 }
 
-func QueueMessageExec(msg mq.Delivery, sendParams model.SnmpSendParams, saveApiUrl string)  {
+func QueueMessageExec(msg mq.Delivery, sendParams model.SnmpSendParams, saveApiUrl string) {
 
-	queueMessage := GetFormAmqpItem(msg, sendParams)  // Формируем данные для запроса
-
+	queueMessage := GetFormAmqpItem(msg, sendParams) // Формируем данные для запроса
 	// snmp_handl.SnmpBulkRequestSend(queueMessage, saveApiUrl) // Выполняем snmp запрос
 
 	fmt.Println("QueueMessage : ", queueMessage)
-
 	DatetimePrint()
 
 }
-
 
 func AmqpChannelInit(amqpApiUrl string) (*mq.Channel, error) {
 
@@ -312,22 +299,21 @@ func AmqpChannelInit(amqpApiUrl string) (*mq.Channel, error) {
 func QueueDeclareInit(channel *mq.Channel, queueName string) (mq.Queue, error) {
 
 	queue, err := channel.QueueDeclare(
-		queueName,       // name
-		false,    // durable
-		false,  // delete when unused
-		false,   // exclusive
-		false,    // no-wait
-		nil,        // arguments
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 
 	return queue, err
 }
 
-
 func DatetimePrint() {
 	t := time.Now()
 	formatted := fmt.Sprintf("%d-%02d-%02d__%02d:%02d:%02d",
-		                     t.Year(), t.Month(), t.Day(),
-		                     t.Hour(), t.Minute(), t.Second())
+		t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
 	fmt.Println(formatted)
 }

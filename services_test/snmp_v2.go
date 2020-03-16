@@ -4,25 +4,27 @@ import (
 	model "Snmp-Golang/internal/models"
 	snmp_serv "Snmp-Golang/internal/snmp_handler"
 	"fmt"
+	"log"
 )
 
 func main() {
 
-	realQuery  := false
+	realIpAddr  := false
 	saveApiUrl := model.SAVE_API_URL
 	fmt.Println(saveApiUrl)
 
 	param := model.SnmpSendParams{
 		Ip: "192.168.2.184",
-		//Oid:".1.3.6.1",
+		// Oid:".1.3.6.1",
 		Oid:".1.3.6.1.2.1.1.9.1",
+		// Oid:"1.3.6.1.2.1.1.1.0",
 		Community: "public",
 		Port:      "161",
-		DeviceId:  "",
+		DeviceId:  "Printer-Id-100",
 		SelCount:  0,
 	}
 
-	if realQuery {
+	if realIpAddr {
 		param.Ip = "190.169.1.5"
 		param.Oid = ".1.3.6.1.4.1.119.2.3.69.501.7"
 		// param.Oid = ".1.3.6.1.4.1.119.2.3.69"
@@ -30,7 +32,9 @@ func main() {
 
 	// funcType := "walk_all"
 	// funcType := "bulk"
-	funcType := "walk_all"
+	// funcType := "bulk_walk_all"
+	// fType := "BULK_WALK_ALL"
+	fType := "GET"
 
 	//for i := 0; i < 3; i++ {
 	//
@@ -49,12 +53,20 @@ func main() {
 	//}
 
 
-	for i := 0; i < 3; i++ {
-		saveError := snmp_serv.SnmpStart(param, saveApiUrl, funcType)
-		if saveError != nil {
-			fmt.Println("Error: SnmpStart function", saveError)
-		}
+	//for i := 0; i < 3; i++ {
+	//	saveError := snmp_serv.SnmpStart(param, saveApiUrl, funcType)
+	//	if saveError != nil {
+	//		fmt.Println("Error: SnmpStart function", saveError)
+	//	}
+	//}
+
+    r, err := snmp_serv.SnmpManagerStart(param, fType)
+    if err != nil {
+    	fmt.Println(err)
+		log.Fatal("Snmp Request Func Error")
 	}
+
+    r.PrintValues()
 
 }
 
