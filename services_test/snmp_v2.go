@@ -34,7 +34,7 @@ func main() {
 	// funcType := "bulk"
 	// funcType := "bulk_walk_all"
 	// fType := "BULK_WALK_ALL"
-	fType := "GET"
+	fType := "BULK"
 
 	//for i := 0; i < 3; i++ {
 	//

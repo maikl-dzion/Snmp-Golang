@@ -1,8 +1,8 @@
 package main
 
 import (
-	model "../internal/models"
-	snmp_service "../internal/snmp_handler"
+	model "Snmp-Golang/internal/models"
+	snmp_service "Snmp-Golang/internal/snmp_handler"
 	"fmt"
 )
 

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	model "../models"
-	snmp_handl "../snmp_handler"
+	model "Snmp-Golang/internal/models"
+	snmp_handl "Snmp-Golang/internal/snmp_handler"
 	mq "github.com/streadway/amqp"
 )
 
@@ -110,7 +110,16 @@ func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.Snm
 
 func FailOnError(err error, msg string) {
 	if err != nil {
+		fmt.Println(msg, err)
+		model.LogSave(msg, err, "FatalErrors")
 		log.Fatalf("%s: %s", msg, err)
+	}
+}
+
+func WarnOnError(err error, msg string) {
+	if err != nil {
+		fmt.Println(msg, err)
+		model.LogSave(msg, err, "WarningErrors")
 	}
 }
 
@@ -198,19 +207,19 @@ func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 ///    NEW MESSAGES RENDER    ////////////////
 //////////////////////////////////////////////
 
-func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType string) {
+func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, amqpFuncType string) {
 
-	channel, errChan := AmqpChannelInit(amqpUrl)
+	channel, connect, errChannel := AmqpChannelInit(amqpUrl)
+	defer connect.Close()
 
-	if errChan != nil {
-		fmt.Println("Amqp Init :", errChan)
-		defer channel.Close()
+	if errChannel != nil {
+		FailOnError(errChannel, "Fatal Error - Connect to Cannel Amqp")
 	}
+	defer channel.Close()
 
 	queue, errQueue := QueueDeclareInit(channel, queueName)
-
 	if errQueue != nil {
-		fmt.Println("Queue declare :", errQueue)
+		FailOnError(errQueue, "Fatal Error - Queue declare Amqp")
 	}
 
 	sendParams := model.SnmpSendParams{
@@ -223,9 +232,9 @@ func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType string) {
 		SelCount:  0,
 	}
 
-	if selectType == "consumer" {
+	if amqpFuncType == "consumer" {
 
-		messagesList, errCon := channel.Consume(
+		messagesList, errGetMessages := channel.Consume(
 			queue.Name, // queue
 			"",         // consumer
 			true,       // auto-ack
@@ -234,31 +243,36 @@ func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType string) {
 			false,      // no-wait
 			nil,        // args
 		)
-
-		if errCon != nil {
-			fmt.Println("Messages ConsumeFunc :", errCon)
+		if errGetMessages != nil {
+			FailOnError(errGetMessages, "Fatal Error - Get Messages ConsumeFunc")
 		}
-
 		QueueMessagesListRender(messagesList, sendParams, saveApiUrl)
 
 	} else {
-
+		ch := 0
 		for {
 
 			message, stateOk, err := channel.Get(queue.Name, true)
 			if err != nil {
-				fmt.Println("Message GetFunc :", err)
+				WarnOnError(err, "Message GetFunc (channel.Get):")
 			}
-
 			if stateOk {
+
+				ch++
+				fmt.Println("1================")
+				fmt.Println("Message Count:", ch)
+				model.DatetimePrint()
+				fmt.Println("1================")
+
 				QueueMessageExec(message, sendParams, saveApiUrl)
+				// go QueueMessageExec(message, sendParams, saveApiUrl)
+
 			} else {
 				fmt.Println("Message GetFunc Not Ok :", stateOk)
+				WarnOnError(nil, "Message GetFunc Not Ok :")
 			}
 		}
 	}
-
-	// messagesList, _status, err := channel.Get(queue.Name, true)
 }
 
 func QueueMessagesListRender(messagesList <-chan mq.Delivery,
@@ -274,26 +288,30 @@ func QueueMessagesListRender(messagesList <-chan mq.Delivery,
 
 func QueueMessageExec(msg mq.Delivery, sendParams model.SnmpSendParams, saveApiUrl string) {
 
+	snmpFuncType := model.SNMP_FUNC_TYPE
 	queueMessage := GetFormAmqpItem(msg, sendParams) // Формируем данные для запроса
-	// snmp_handl.SnmpBulkRequestSend(queueMessage, saveApiUrl) // Выполняем snmp запрос
 
-	fmt.Println("QueueMessage : ", queueMessage)
-	DatetimePrint()
-
+	fmt.Println("==============Snmp Query Start===============")
+	jsonSaveError := snmp_handl.SnmpNewStart(queueMessage, saveApiUrl, snmpFuncType)
+	fmt.Println("QueueMessageExec:: QueueMessage  : ", queueMessage)
+	fmt.Println("QueueMessageExec:: JsonSaveError : ", jsonSaveError)
+	fmt.Println("==============Snmp Query Finish===============")
+	// DatetimePrint()
 }
 
-func AmqpChannelInit(amqpApiUrl string) (*mq.Channel, error) {
+func AmqpChannelInit(amqpApiUrl string) (*mq.Channel, *mq.Connection, error) {
 
 	connect, err := mq.Dial(amqpApiUrl)
-	FailOnError(err, "Failed to connect to RabbitMQ")
-	//defer connect.Close()
+	if(err != nil) {
+		FailOnError(err, "Fatal Error - Connect to RabbitMQ")
+	}
 
 	channel, err := connect.Channel()
-	FailOnError(err, "Failed to open a channel")
-	// defer channel.Close()
+	if err != nil {
+		return  channel, connect, err
+	}
 
-	return channel, err
-
+	return channel, connect, nil
 }
 
 func QueueDeclareInit(channel *mq.Channel, queueName string) (mq.Queue, error) {

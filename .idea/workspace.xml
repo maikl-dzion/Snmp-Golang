@@ -7,6 +7,8 @@
       <change beforePath="$PROJECT_DIR$/internal/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/models.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/snmp_handler/snmpHandlers.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpHandlers.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/snmp_handler/snmpManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/snmp_handler/snmpManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services_test/amqp.go" beforeDir="false" afterPath="$PROJECT_DIR$/services_test/amqp.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services_test/snmp.go" beforeDir="false" afterPath="$PROJECT_DIR$/services_test/snmp.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services_test/snmp_v2.go" beforeDir="false" afterPath="$PROJECT_DIR$/services_test/snmp_v2.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,38 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1060">
-              <caret line="59" column="9" lean-forward="true" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
-              <folding>
-                <element signature="e#22#125#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/internal/amqp_handler/amqpHandlers.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="20" column="25" lean-forward="true" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
-              <folding>
-                <element signature="e#22#147#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/services_test/snmp_v2.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="36" column="4" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="4" />
-              <folding>
-                <element signature="e#14#115#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="432">
+              <caret line="98" column="18" selection-start-line="98" selection-start-column="18" selection-end-line="98" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -56,8 +31,41 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/services_test/amqp.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
+            <state relative-caret-position="400">
               <caret line="20" column="29" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="29" />
+              <folding>
+                <element signature="e#14#155#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/services_test/snmp_v2.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/internal/amqp_handler/amqpHandlers.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="914">
+              <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
+              <folding>
+                <element signature="e#22#221#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/services_test/snmp.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="7" selection-start-line="7" selection-end-line="7" />
             </state>
           </provider>
         </entry>
@@ -65,8 +73,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandlers.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="296">
-              <caret line="142" column="45" selection-start-line="142" selection-start-column="38" selection-end-line="142" selection-end-column="45" />
+            <state relative-caret-position="465">
+              <caret line="318" column="73" selection-start-line="318" selection-start-column="73" selection-end-line="318" selection-end-column="73" />
               <folding>
                 <element signature="e#22#180#0" expanded="true" />
               </folding>
@@ -75,13 +83,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cmd/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="280">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
+              <folding>
+                <element signature="e#14#85#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/internal/models/models.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="339">
-              <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
-              <folding>
-                <element signature="e#15#40#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="279">
+              <caret line="56" column="23" lean-forward="true" selection-start-line="56" selection-start-column="23" selection-end-line="56" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -103,6 +120,7 @@
       <find>bulkPoint</find>
       <find>getPoint</find>
       <find>snmpClient</find>
+      <find>FailOnError</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="C:\Go" />
@@ -117,26 +135,26 @@
         <option value="$PROJECT_DIR$/example/consumer/consumer.go" />
         <option value="$PROJECT_DIR$/cmd/main.go" />
         <option value="$PROJECT_DIR$/internal/amqp_handler/amqpHandler.go" />
-        <option value="$PROJECT_DIR$/services_test/amqp.go" />
         <option value="$PROJECT_DIR$/example/snmp/snmp.go" />
         <option value="$PROJECT_DIR$/example/snmp/snmp_hanlers.go" />
         <option value="$PROJECT_DIR$/example/snmp/snmp_run.go" />
         <option value="$PROJECT_DIR$/example/snmp_new_var.go" />
-        <option value="$PROJECT_DIR$/services_test/snmp.go" />
         <option value="$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" />
         <option value="$PROJECT_DIR$/internal/snmp_handler/snmpUtils.go" />
-        <option value="$PROJECT_DIR$/internal/models/models.go" />
+        <option value="$PROJECT_DIR$/services_test/snmp_v2.go" />
+        <option value="$PROJECT_DIR$/services_test/snmp.go" />
         <option value="$PROJECT_DIR$/internal/snmp_handler/snmpManager.go" />
         <option value="$PROJECT_DIR$/internal/snmp_handler/snmpHandlers.go" />
+        <option value="$PROJECT_DIR$/services_test/amqp.go" />
         <option value="$PROJECT_DIR$/internal/amqp_handler/amqpHandlers.go" />
-        <option value="$PROJECT_DIR$/services_test/snmp_v2.go" />
+        <option value="$PROJECT_DIR$/internal/models/models.go" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1270" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="344" />
+    <option name="y" value="70" />
+    <option name="width" value="1303" />
     <option name="height" value="855" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -160,11 +178,19 @@
             <path>
               <item name="Snmp-Golang" type="b2602c69:ProjectViewProjectNode" />
               <item name="Snmp-Golang" type="462c0819:PsiDirectoryNode" />
-              <item name="services_test" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Snmp-Golang" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Snmp-Golang" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="snmp_handler" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Snmp-Golang" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Snmp-Golang" type="462c0819:PsiDirectoryNode" />
+              <item name="services_test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -206,7 +232,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build snmp_v2.go">
+  <component name="RunManager" selected="Go Build.go build amqp.go">
     <configuration name="go build amqp.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Snmp-Golang" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -253,24 +279,25 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build amqp.go" />
         <item itemvalue="Go Build.go build snmp_v2.go" />
         <item itemvalue="Go Build.go build snmp.go" />
         <item itemvalue="Go Build.go build snmp_new_var.go" />
-        <item itemvalue="Go Build.go build amqp.go" />
         <item itemvalue="Go Build.go build main.go" />
       </list>
     </recent_temporary>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="344" y="70" width="1303" height="855" extended-state="1" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.114605546" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14641996" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.26406926" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39935064" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33441558" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4512987" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -400,21 +427,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/services_test/snmp.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="43" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandler.go" />
-    <entry file="file://$PROJECT_DIR$/cmd/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="8" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/example/snmp/snmp_run.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="720">
@@ -445,47 +458,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/internal/models/models.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
-          <folding>
-            <element signature="e#15#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../github.com/soniah/gosnmp/walk.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="110" column="17" selection-start-line="110" selection-start-column="17" selection-end-line="110" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandlers.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="142" column="45" selection-start-line="142" selection-start-column="38" selection-end-line="142" selection-end-column="45" />
-          <folding>
-            <element signature="e#22#180#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/services_test/amqp.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="20" column="29" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/internal/amqp_handler/amqpHandlers.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="20" column="25" lean-forward="true" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
-          <folding>
-            <element signature="e#22#147#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -496,23 +472,78 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpManager.go">
+    <entry file="file://C:/Go/src/fmt/print.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1060">
-          <caret line="59" column="9" lean-forward="true" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
+        <state relative-caret-position="157">
+          <caret line="251" column="5" selection-start-line="251" selection-start-column="5" selection-end-line="251" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
           <folding>
-            <element signature="e#22#125#0" expanded="true" />
+            <element signature="e#14#85#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/models/models.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="56" column="23" lean-forward="true" selection-start-line="56" selection-start-column="23" selection-end-line="56" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services_test/snmp.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services_test/amqp.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="20" column="29" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="29" />
+          <folding>
+            <element signature="e#14#155#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/services_test/snmp_v2.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="36" column="4" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="4" />
+        <state relative-caret-position="60">
+          <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/amqp_handler/amqpHandlers.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="914">
+          <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
           <folding>
-            <element signature="e#14#115#0" expanded="true" />
+            <element signature="e#22#221#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpHandlers.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="318" column="73" selection-start-line="318" selection-start-column="73" selection-end-line="318" selection-end-column="73" />
+          <folding>
+            <element signature="e#22#180#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/snmp_handler/snmpManager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="98" column="18" selection-start-line="98" selection-start-column="18" selection-end-line="98" selection-end-column="18" />
         </state>
       </provider>
     </entry>

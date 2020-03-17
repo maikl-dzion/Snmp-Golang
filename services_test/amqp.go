@@ -4,27 +4,22 @@ import (
 	// "fmt"
 	// snmp_serv "../internal/snmp_handler"
 
-	amqp "../internal/amqp_handler"
-	model "../internal/models"
+	amqp "Snmp-Golang/internal/amqp_handler"
+	model "Snmp-Golang/internal/models"
 )
 
 
 func main() {
 
+	// model.LogSave("test1 test2 test3", "")
+
 	queueName  := model.QUEUE_NAME
 	amqpUrl    := model.AMQP_API_URL
 	saveApiUrl := model.SAVE_API_URL
-	selectType := "get"
+	amqpFuncType := model.AMQP_FUNC_TYPE
+
+	amqp.GetMessagesListStart(amqpUrl, queueName, saveApiUrl, amqpFuncType)
 
 	// amqp.RecevieMessagesListFromQueue(amqpUrl, queueName, saveApiUrl)
 
-	amqp.GetMessagesListStart(amqpUrl, queueName, saveApiUrl, selectType)
-
-
 }
-
-
-
-//func (r ResponseJsonItems) FomattedJson(d model.ResponseMessage) {
-//	r = append(r, []byte(d))
-//}

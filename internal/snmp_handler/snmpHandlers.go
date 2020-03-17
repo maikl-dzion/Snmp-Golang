@@ -82,20 +82,6 @@ func SnmpStart(params model.SnmpSendParams, saveApiUrl string, funcType string) 
 }
 
 
-func SnmpNewStart(params model.SnmpSendParams, saveApiUrl string, funcType string) error {
-
-	response, err := SnmpManagerStart(params, funcType)
-	if err != nil {
-		fmt.Println("Error: SnmpRequestRun function", err)
-		os.Exit(1)
-		return err
-	}
-
-	var saveError = MakeJsonMultiRequest(saveApiUrl, response.Items)
-	datetimePrint()
-	return saveError
-}
-
 ////////////////////////////////////////
 /**************************************
   ФУНКЦИИ ДЛЯ ВЫПОЛНЕНИЯ SNMP - ЗАПРОСА
@@ -310,26 +296,28 @@ func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 
 func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) error {
 
+    //fmt.Println(messages[0])
+	//slice1 := []int{1,2,3}
+
 	bytesRepresentation, err := json.Marshal(messages)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println("MakeJsonMultiRequest::Json Marshal ERROR:", err)
+		//log.Fatalln(err)
 	}
 
 	resp, err := http.Post(apiUrl, "application/json",
-		bytes.NewBuffer(bytesRepresentation))
+		                   bytes.NewBuffer(bytesRepresentation))
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println("MakeJsonMultiRequest::Http Post ERROR:", err)
+		//log.Fatalln(err)
 	}
 
-	var _result map[string]interface{}
+	var jsonResultLog map[string]interface{}
 
-	sendError := json.NewDecoder(resp.Body).Decode(&_result)
+	jsonSaveError := json.NewDecoder(resp.Body).Decode(&jsonResultLog)
 
-	//log.Println(sendError)
-	//log.Println(_result)
-	fmt.Println("Send Json in Postgres:OK; SendError : ", sendError)
-
-	return sendError
+	log.Println("MakeJsonMultiRequest::JsonResultSaveLog:", jsonResultLog)
+	return jsonSaveError
 
 }
 
@@ -339,10 +327,10 @@ func SnmpBulkRequestSend(params model.SnmpSendParams, saveApiUrl string) error {
 		panic("Snmp Send Error")
 	}
 
-	sendError := MakeJsonMultiRequest(saveApiUrl, snmpItems.Items)
+	jsonSaveError := MakeJsonMultiRequest(saveApiUrl, snmpItems.Items)
 	// fmt.Println(sendError)
-	datetimePrint()
-	return sendError
+	// datetimePrint()
+	return jsonSaveError
 }
 
 func datetimePrint() {

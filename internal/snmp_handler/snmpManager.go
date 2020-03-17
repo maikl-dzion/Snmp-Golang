@@ -87,3 +87,19 @@ func SnmpManagerStart(conf model.SnmpSendParams, fType string) (SnmpResultItems,
 
 	return snmpResult, nil
 }
+
+
+
+func SnmpNewStart(params model.SnmpSendParams, saveApiUrl string, funcType string) error {
+
+	response, err := SnmpManagerStart(params, funcType)
+	if err != nil {
+		fmt.Println("Error: SnmpRequestRun function", err)
+		os.Exit(1)
+		return err
+	}
+	var jsonSaveError = MakeJsonMultiRequest(saveApiUrl, response.Items)
+	// datetimePrint()
+	return jsonSaveError
+
+}
