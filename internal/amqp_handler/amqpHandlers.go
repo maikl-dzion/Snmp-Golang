@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -100,10 +101,12 @@ func GetFormAmqpItem(msg mq.Delivery, sendParams model.SnmpSendParams) model.Snm
 	item := string(msg.Body)
 	message := strings.Split(item, " ")
 
-	sendParams.Id = message[0] // MessageId
-	//sendParams.Ip   = message[1] // Ip Address
-	//sendParams.Oid  = message[2] // Oid
-	sendParams.Port = message[3]
+	sendParams.Id   = message[0] // MessageId
+	sendParams.Ip   = message[1] // Ip Address
+	sendParams.Oid  = message[2] // Oid
+	sendParams.Port = message[3] // Port
+	sendParams.Type = message[4] // Type
+	sendParams.Retry, _ = strconv.Atoi(message[5])// Retry
 
 	return sendParams
 }
@@ -186,7 +189,6 @@ func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 	messages := snmp_handl.SnmpResultItems{}
 
 	for _, item := range res.Items {
-
 		//messages = append(messages,
 		//	              model.ResponseMessage{
 		//					Oid:".1.3.6.1.4.1.119.2.3.69.501.7.1.1.1.3.17",
@@ -195,7 +197,6 @@ func SnmpResultsRender(res snmp_handl.SnmpResultItems) {
 		//					DeviceId: "234",
 		//			      })
 		fmt.Println(item)
-
 	}
 
 	MakeJsonRequest(saveApiUrl, messages)
@@ -259,13 +260,12 @@ func GetMessagesListStart(amqpUrl, queueName, saveApiUrl, amqpFuncType string) {
 			if stateOk {
 
 				ch++
-				fmt.Println("1================")
-				fmt.Println("Message Count:", ch)
-				model.DatetimePrint()
-				fmt.Println("1================")
+				//fmt.Println("1================")
+				//fmt.Println("Message Count:", ch)
+				//model.DatetimePrint()
+				//fmt.Println("1================")
 
 				QueueMessageExec(message, sendParams, saveApiUrl)
-				// go QueueMessageExec(message, sendParams, saveApiUrl)
 
 			} else {
 				fmt.Println("Message GetFunc Not Ok :", stateOk)
@@ -292,7 +292,7 @@ func QueueMessageExec(msg mq.Delivery, sendParams model.SnmpSendParams, saveApiU
 	queueMessage := GetFormAmqpItem(msg, sendParams) // Формируем данные для запроса
 
 	fmt.Println("==============Snmp Query Start===============")
-	jsonSaveError := snmp_handl.SnmpNewStart(queueMessage, saveApiUrl, snmpFuncType)
+	jsonSaveError := snmp_handl.SnmpMakeRequest(queueMessage, saveApiUrl, snmpFuncType, msg)
 	fmt.Println("QueueMessageExec:: QueueMessage  : ", queueMessage)
 	fmt.Println("QueueMessageExec:: JsonSaveError : ", jsonSaveError)
 	fmt.Println("==============Snmp Query Finish===============")
@@ -334,4 +334,86 @@ func DatetimePrint() {
 		t.Year(), t.Month(), t.Day(),
 		t.Hour(), t.Minute(), t.Second())
 	fmt.Println(formatted)
+}
+
+func AmqpProducer(msg string) error {
+
+	amqpUrl   := model.AMQP_API_URL
+	queueName := model.QUEUE_NAME
+
+	conn, _ := mq.Dial(amqpUrl)
+	defer conn.Close()
+
+	//---Create a channel
+	ch, _ := conn.Channel()
+	defer ch.Close()
+
+	//---Declare a queue
+	q, err := ch.QueueDeclare(
+		queueName,      // name of the queue
+		false,   // should the message be persistent? also queue will survive if the cluster gets reset
+		false, // autodelete if there's no consumers (like queues that have anonymous names, often used with fanout exchange)
+		false,  // exclusive means I should get an error if any other consumer subsribes to this queue
+		false,   // no-wait means I don't want RabbitMQ to wait if there's a queue successfully setup
+		nil,       // arguments for more advanced configuration
+	)
+
+	if err != nil {
+		model.WarnOnError(err, "AmqpProducer::QueueDeclare ERROR:")
+		return err
+	}
+
+	// item := string(msg.Body)
+	// item := "3909 192.168.2.184 .1.3.6.1.2.1.1.9.1 161 SNMP 0"
+	// message := strings.Split(item, " ")
+
+	err = ch.Publish(
+		"",      // exchange
+		q.Name,          // routing key
+		false,  // mandatory
+		false,  // immediate
+		mq.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(msg),
+		},
+	)
+
+	log.Printf("Message: %s", msg)
+
+	return err
+}
+
+type QueueOpenResultParam struct {
+		Channel   *mq.Channel
+		Connect   *mq.Connection
+		QueueObj  *mq.Queue
+		Name string
+}
+
+func RabbitQueueOpen(amqpUrl, queueName string) (QueueOpenResultParam, error) {
+
+	channel, connect, errChannel := AmqpChannelInit(amqpUrl)
+	//defer connect.Close()
+
+	resParam := QueueOpenResultParam{
+		Channel: channel,
+		Connect: connect,
+	}
+
+	if errChannel != nil {
+		WarnOnError(errChannel, "Fatal Error - Connect to Cannel Amqp")
+		return  resParam, errChannel
+	}
+	// defer channel.Close()
+
+	queue, errQueue := QueueDeclareInit(channel, queueName)
+	if errQueue != nil {
+		WarnOnError(errQueue, "Fatal Error - Queue declare Amqp")
+		return  resParam, errQueue
+	}
+
+	resParam.QueueObj = &queue
+	resParam.Name     = queue.Name
+
+	return  resParam, nil
 }

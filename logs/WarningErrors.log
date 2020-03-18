@@ -1,0 +1,4 @@
+2020/03/17 18:23:40 [Msg]:Message GetFunc (channel.Get): -||||- [Error]: Exception (504) Reason: "channel/connection is not open"
+2020/03/17 18:23:41 [Msg]:Message GetFunc (channel.Get): -||||- [Error]: Exception (504) Reason: "channel/connection is not open"
+2020/03/17 18:23:42 [Msg]:Message GetFunc (channel.Get): -||||- [Error]: Exception (504) Reason: "channel/connection is not open"
+2020/03/17 18:23:50 [Msg]:Message GetFunc (channel.Get): -||||- [Error]: Exception (504) Reason: "channel/connection is not open"

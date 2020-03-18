@@ -1,11 +1,8 @@
 package snmp_handler
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -13,51 +10,6 @@ import (
 	model "Snmp-Golang/internal/models"
 	snmp "github.com/soniah/gosnmp"
 )
-
-////////////////////////////////////////
-/**************************************
-   СТРУКТУРА ДЛЯ СОХРАНЕНИЯ РЕЗУЛЬТАТОВ
-           SNMP - ЗАПРОСА
-*************************************/
-type SnmpResultMessage struct {
-	Oid      string `json:"oid"`
-	Ip       string `json:"ip"`
-	ValueInt int64  `json:"value_int"`
-	ValueStr string `json:"value_str"`
-	DeviceId string `json:"device_id"`
-	DataType string `json:"data_type"`
-}
-
-type SnmpResultItems struct {
-	Items    []SnmpResultMessage
-	DeviceId string
-	Ip string
-}
-
-func (r *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU) error {
-
-	item := FormSnmpResultItem(pdu)
-	item.DeviceId = r.DeviceId
-	item.Ip = r.Ip
-	r.Items = append(r.Items, item)
-
-	return nil
-}
-
-func (items *SnmpResultItems) PrintValues() {
-	for i, item := range items.Items {
-		fmt.Println("[Ch]=", i,
-			"[Oid]=", item.Oid,
-			"[Ip]=", item.Ip,
-			"[ValInt]=", item.ValueInt,
-			"[ValStr]=", item.ValueStr,
-			"[DateType]=", item.DataType,
-			"[DeviceId]=", item.DeviceId)
-	}
-}
-
-//**************************************
-////////////////////////////////////////
 
 ///////////////////////////////////////////////////
 /************************************************
@@ -74,10 +26,9 @@ func SnmpStart(params model.SnmpSendParams, saveApiUrl string, funcType string) 
 		// panic("Snmp Send Error")
 	}
 
-	var saveError = MakeJsonMultiRequest(saveApiUrl, response.Items)
-
+	r, saveError := MakeJsonMultiRequest(saveApiUrl, response.Items)
+	fmt.Println("JsonMakeResult:", r)
 	datetimePrint()
-
 	return saveError
 }
 
@@ -256,7 +207,7 @@ func SnmpGetExecute(send model.SnmpSendParams) (SnmpResultItems, error) {
 func FormSnmpResultItem(pdu snmp.SnmpPDU) SnmpResultMessage {
 
 	var valueStr string = ""
-	var valueInt int64 = 0
+	var valueInt int64  = 0
 	dataType := pdu.Type.String()
 	oid := pdu.Name
 	ip  := snmp.Default.Target
@@ -294,32 +245,7 @@ func BulkRequestRun(params model.SnmpSendParams) (SnmpResultItems, error) {
 	return resultItems, nil
 }
 
-func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) error {
 
-    //fmt.Println(messages[0])
-	//slice1 := []int{1,2,3}
-
-	bytesRepresentation, err := json.Marshal(messages)
-	if err != nil {
-		fmt.Println("MakeJsonMultiRequest::Json Marshal ERROR:", err)
-		//log.Fatalln(err)
-	}
-
-	resp, err := http.Post(apiUrl, "application/json",
-		                   bytes.NewBuffer(bytesRepresentation))
-	if err != nil {
-		fmt.Println("MakeJsonMultiRequest::Http Post ERROR:", err)
-		//log.Fatalln(err)
-	}
-
-	var jsonResultLog map[string]interface{}
-
-	jsonSaveError := json.NewDecoder(resp.Body).Decode(&jsonResultLog)
-
-	log.Println("MakeJsonMultiRequest::JsonResultSaveLog:", jsonResultLog)
-	return jsonSaveError
-
-}
 
 func SnmpBulkRequestSend(params model.SnmpSendParams, saveApiUrl string) error {
 	snmpItems, err := BulkRequestRun(params)
@@ -327,8 +253,8 @@ func SnmpBulkRequestSend(params model.SnmpSendParams, saveApiUrl string) error {
 		panic("Snmp Send Error")
 	}
 
-	jsonSaveError := MakeJsonMultiRequest(saveApiUrl, snmpItems.Items)
-	// fmt.Println(sendError)
+	_, jsonSaveError := MakeJsonMultiRequest(saveApiUrl, snmpItems.Items)
+	//fmt.Println(sendError)
 	// datetimePrint()
 	return jsonSaveError
 }

@@ -27,10 +27,12 @@ type SnmpSendParams struct {
 	Id        string
 	Ip        string
 	Oid       string
-	Community string
+	Type      string
 	Port      string
-	SelCount  int
+	Retry     int
 	DeviceId  string
+	Community string
+	SelCount  int
 }
 
 /////////////////////////////////////
@@ -67,4 +69,12 @@ func LogSave(msg string, err error, fileName string) {
 	log.SetOutput(logfile)
 	log.Printf("[Msg]:%s -||||- [Error]: %s", msg, err)
 
+}
+
+
+func WarnOnError(err error, msg string) {
+	if err != nil {
+		fmt.Println(msg, err)
+		LogSave(msg, err, "WarningErrors")
+	}
 }

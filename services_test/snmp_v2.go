@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	realIpAddr  := false
+	realIpAddr := false
 	saveApiUrl := model.SAVE_API_URL
 	fmt.Println(saveApiUrl)
 

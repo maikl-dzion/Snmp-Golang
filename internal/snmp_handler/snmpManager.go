@@ -1,8 +1,12 @@
 package snmp_handler
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/streadway/amqp"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -10,11 +14,58 @@ import (
 	snmp "github.com/soniah/gosnmp"
 )
 
-type PduValue struct {
-	name   string
-	column string
-	value  interface{}
+//type PduValue struct {
+//	name   string
+//	column string
+//	value  interface{}
+//}
+
+
+////////////////////////////////////////
+/**************************************
+   СТРУКТУРА ДЛЯ СОХРАНЕНИЯ РЕЗУЛЬТАТОВ
+           SNMP - ЗАПРОСА
+*************************************/
+type SnmpResultMessage struct {
+	Oid      string `json:"oid"`
+	Ip       string `json:"ip"`
+	ValueInt int64  `json:"value_int"`
+	ValueStr string `json:"value_str"`
+	DeviceId string `json:"device_id"`
+	DataType string `json:"data_type"`
 }
+
+type SnmpResultItems struct {
+	Items    []SnmpResultMessage
+	DeviceId string
+	Ip string
+}
+
+func (r *SnmpResultItems) CollectValues(pdu snmp.SnmpPDU) error {
+
+	item := SnmpResultDataConvert(pdu)
+	item.DeviceId = r.DeviceId
+	item.Ip = r.Ip
+	r.Items = append(r.Items, item)
+
+	return nil
+}
+
+func (items *SnmpResultItems) PrintValues() {
+	for i, item := range items.Items {
+		fmt.Println("[Ch]=", i,
+			"[Oid]=", item.Oid,
+			"[Ip]=", item.Ip,
+			"[ValInt]=", item.ValueInt,
+			"[ValStr]=", item.ValueStr,
+			"[DateType]=", item.DataType,
+			"[DeviceId]=", item.DeviceId)
+	}
+}
+
+//**************************************
+////////////////////////////////////////
+
 
 func SnmpConfigInit(s model.SnmpSendParams) (*snmp.GoSNMP, error) {
 	client := &snmp.GoSNMP{
@@ -90,16 +141,97 @@ func SnmpManagerStart(conf model.SnmpSendParams, fType string) (SnmpResultItems,
 
 
 
-func SnmpNewStart(params model.SnmpSendParams, saveApiUrl string, funcType string) error {
+func SnmpMakeRequest(params model.SnmpSendParams, saveApiUrl string, funcType string, msg amqp.Delivery) error {
 
 	response, err := SnmpManagerStart(params, funcType)
 	if err != nil {
-		fmt.Println("Error: SnmpRequestRun function", err)
-		os.Exit(1)
+		model.WarnOnError(err, "Error: SnmpMakeRequest")
+		retry := params.Retry
+	    if retry > 5 {
+			SnmpExceptionHandler(msg)
+		} else {
+			retry++
+			SnmpMessageRetryHandler(msg, retry)
+		}
+
+		// os.Exit(1)
 		return err
 	}
-	var jsonSaveError = MakeJsonMultiRequest(saveApiUrl, response.Items)
-	// datetimePrint()
+
+	_ , jsonSaveError := MakeJsonMultiRequest(saveApiUrl, response.Items)
+	if jsonSaveError != nil {
+		model.WarnOnError(err, "MakeJsonMultiRequest::Json SEND Error:")
+	}
+
 	return jsonSaveError
 
+}
+
+
+func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) (map[string]interface{}, error) {
+
+	//fmt.Println(messages[0])
+	//slice1 := []int{1,2,3}
+
+	var jsonResultLog map[string]interface{}
+
+	bytesRepresentation, err := json.Marshal(messages)
+	if err != nil {
+		model.WarnOnError(err, "MakeJsonMultiRequest::Json Marshal ERROR:")
+		return jsonResultLog, err
+	}
+
+	resp, err := http.Post(apiUrl, "application/json",
+		                   bytes.NewBuffer(bytesRepresentation))
+	if err != nil {
+		model.WarnOnError(err, "MakeJsonMultiRequest::Http Post ERROR:")
+		return jsonResultLog, err
+	}
+
+	jsonSaveError := json.NewDecoder(resp.Body).Decode(&jsonResultLog)
+
+	// log.Println("MakeJsonMultiRequest::JsonResultSaveLog:", jsonResultLog)
+
+	return jsonResultLog, jsonSaveError
+
+}
+
+func SnmpResultDataConvert(pdu snmp.SnmpPDU) SnmpResultMessage {
+
+	var valueStr string = ""
+	var valueInt int64 = 0
+	dataType := pdu.Type.String()
+	oid := pdu.Name
+	ip  := snmp.Default.Target
+	deviceId := ""
+
+	switch pdu.Type {
+	case snmp.OctetString:
+		valueStr = string(pdu.Value.([]byte))
+	default:
+		valueInt = snmp.ToBigInt(pdu.Value).Int64()
+	}
+
+	item := SnmpResultMessage{
+		Ip:       ip,
+		Oid:      oid,
+		ValueInt: valueInt,
+		ValueStr: valueStr,
+		DataType: dataType,
+		DeviceId: deviceId,
+	}
+
+	return item
+}
+
+
+func SnmpMessageRetryHandler(msg amqp.Delivery, retry int) error {
+	fmt.Println(msg)
+	return nil
+	// return amqp_handl.AmqpProducer(msg)
+}
+
+func SnmpExceptionHandler(msg amqp.Delivery) error {
+	fmt.Println(msg)
+	return nil
 }
