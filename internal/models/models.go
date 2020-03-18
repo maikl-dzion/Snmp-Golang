@@ -19,8 +19,8 @@ import (
 const QUEUE_NAME   = "SNMP_QUEUE"
 const AMQP_API_URL = "amqp://tester:12345@172.16.16.235:5672/"
 const SAVE_API_URL = "http://172.16.16.235:8080/data/multi_save"
-const SNMP_FUNC_TYPE = "GET"
-const AMQP_FUNC_TYPE = "get"
+const SNMP_FUNC_TYPE = "BULK"
+const AMQP_FUNC_TYPE = "consumer"
 const LOGS_PATH = "logs"
 
 type SnmpSendParams struct {
@@ -34,6 +34,28 @@ type SnmpSendParams struct {
 	Community string
 	SelCount  int
 }
+
+type CommonInitParam struct {
+	QueueName  string
+	AmqpUrl     string
+	SaveApiUrl  string
+	AmqpFuncType string
+	SnmpFuncType string
+}
+
+
+
+func GetCommonInitParam() CommonInitParam {
+	commonParam := CommonInitParam{
+		QueueName: QUEUE_NAME,
+		AmqpUrl: AMQP_API_URL,
+		SaveApiUrl: SAVE_API_URL,
+		AmqpFuncType: AMQP_FUNC_TYPE,
+		SnmpFuncType: SNMP_FUNC_TYPE,
+	}
+	return commonParam
+}
+
 
 /////////////////////////////////////
 // ---- Вспомогательные функции ----
@@ -76,5 +98,21 @@ func WarnOnError(err error, msg string) {
 	if err != nil {
 		fmt.Println(msg, err)
 		LogSave(msg, err, "WarningErrors")
+	}
+}
+
+func FailOnError(err error, msg string) {
+	if err != nil {
+		fmt.Println(msg, err)
+		LogSave(msg, err, "FatalErrors")
+		log.Fatalf("%s: %s", msg, err)
+	}
+}
+
+func FatalError(err error, msg string) {
+	if err != nil {
+		fmt.Println(msg, err)
+		LogSave(msg, err, "FatalErrors")
+		log.Fatalf("%s: %s", msg, err)
 	}
 }
