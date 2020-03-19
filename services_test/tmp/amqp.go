@@ -29,9 +29,6 @@ func main() {
 		SelCount:  0,
 	}
 
-
-	// model.ReadConfigIni()
-
 	// queueAlias   = ""
 	// amqpUrl      = "amqp://tryettt"
 	// saveApiUrl   = model.SAVE_API_URL

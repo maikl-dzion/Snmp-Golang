@@ -1,0 +1,5 @@
+QueueName    = "SNMP_QUEUE"
+AmqpUrl      = "amqp://tester:12345@172.16.16.235:5672/"
+SaveApiUrl   = "http://172.16.16.235:8080/data/multi_save"
+AmqpFuncType = "BULK"
+SnmpFuncType = "consumer"

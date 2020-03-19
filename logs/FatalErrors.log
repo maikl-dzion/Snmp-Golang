@@ -1,0 +1,1 @@
+2020/03/19 13:02:30 [Msg]:Fatal Error - Connect to RabbitMQ -||||- [Error]: AMQP scheme must be either 'amqp://' or 'amqps://'

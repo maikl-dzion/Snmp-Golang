@@ -2,18 +2,23 @@ package model
 
 import (
 	"fmt"
+	"github.com/BurntSushi/toml"
 	"log"
 	"os"
 	"time"
 )
 
+//const QUEUE_NAME   = "SNMP_QUEUE"
+//const AMQP_API_URL = "amqp://tester:12345@172.16.16.235:5672/"
+//const SAVE_API_URL = "http://172.16.16.235:8080/data/multi_save"
+//const SNMP_FUNC_TYPE = "GET"
+//const AMQP_FUNC_TYPE = "get"
+//const SNMP_FUNC_TYPE = "BULK"
+//const AMQP_FUNC_TYPE = "consumer"
 
-const QUEUE_NAME   = "SNMP_QUEUE"
-const AMQP_API_URL = "amqp://tester:12345@172.16.16.235:5672/"
-const SAVE_API_URL = "http://172.16.16.235:8080/data/multi_save"
-const SNMP_FUNC_TYPE = "BULK"
-const AMQP_FUNC_TYPE = "consumer"
-const LOGS_PATH = "logs"
+const LOGS_PATH   = "logs"
+const CONFIG_FILE = "config.toml"
+const CONFIG_PATH = "config"
 
 type SnmpSendParams struct {
 	Id        string
@@ -38,14 +43,26 @@ type CommonInitParam struct {
 
 
 func GetCommonInitParam() CommonInitParam {
-	commonParam := CommonInitParam{
-		QueueName: QUEUE_NAME,
-		AmqpUrl: AMQP_API_URL,
-		SaveApiUrl: SAVE_API_URL,
-		AmqpFuncType: AMQP_FUNC_TYPE,
-		SnmpFuncType: SNMP_FUNC_TYPE,
+
+	//commonParam := CommonInitParam{
+	//	QueueName: QUEUE_NAME,
+	//	AmqpUrl: AMQP_API_URL,
+	//	SaveApiUrl: SAVE_API_URL,
+	//	AmqpFuncType: AMQP_FUNC_TYPE,
+	//	SnmpFuncType: SNMP_FUNC_TYPE,
+	//}
+
+	configFile := CONFIG_FILE
+	configPath := CONFIG_PATH
+	path := configPath + "/" +configFile
+
+	var config CommonInitParam
+	if _, err := toml.DecodeFile(path, &config); err != nil {
+		FailOnError(err, "FATAL ERROR : Failed to open config file")
 	}
-	return commonParam
+
+
+	return config
 }
 
 
@@ -92,6 +109,30 @@ func WarnOnError(err error, msg string) {
 		LogSave(msg, err, "WarningErrors")
 	}
 }
+
+
+func EventLogSave(msg, eventName, fileName string) {
+
+	if fileName == "" {
+		fileName = "events"
+	}
+
+	if eventName == "" {
+		eventName = "CommonEvent"
+	}
+
+	logFileName := LOGS_PATH + "/" +fileName+ ".log"
+	logfile, errLog := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if errLog != nil {
+		log.Fatalln(errLog)
+	}
+	defer logfile.Close()
+
+	log.SetOutput(logfile)
+	log.Printf("[Name]:%s ___ [Msg]: %s", eventName, msg)
+
+}
+
 
 func FailOnError(err error, msg string) {
 	if err != nil {

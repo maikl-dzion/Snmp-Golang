@@ -1,19 +1,26 @@
 package main
 
 import (
-	amqp "Snmp-Golang/internal/amqp_handler"
+
+	common_serv "Snmp-Golang/internal/common_services"
 	model "Snmp-Golang/internal/models"
 )
 
+
 func main() {
 
-	// snmpbulkget -v2c -Cn0 -Cr5 -c public 190.169.1.5 .1.3.6.1.4.1.119.2.3.69.501.7
+	commonParams := model.GetCommonInitParam()
 
-	queueName  := model.QUEUE_NAME
-	amqpUrl    := model.AMQP_API_URL
-	saveApiUrl := model.SAVE_API_URL
-	amqpFuncType := model.AMQP_FUNC_TYPE
+	sendParams := model.SnmpSendParams{
+		Ip:  "192.168.2.184",
+		Oid: ".1.3.6.1",
+		// Oid:".1.3.6.1.2.1.1.9.1",
+		Community: "public",
+		Port:      "161",
+		DeviceId:  "TestDeviceId-777-999",
+		SelCount:  0,
+	}
 
-	amqp.GetMessagesListStart(amqpUrl, queueName, saveApiUrl, amqpFuncType)
-	// amqp.RecevieMessagesListFromQueue(amqpUrl, queueName, saveApiUrl)
+	common_serv.GetQueueMessagesInizialize(commonParams, sendParams)
+
 }
