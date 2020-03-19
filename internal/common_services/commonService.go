@@ -46,7 +46,7 @@ func BasisGetAction(queueInit  amqp_serv.QueueInitResultParam,
 		msg, err, ok := amqp_serv.GetOneMessage(queueInit)
 		if err == nil && ok {
 			snmpItem := amqp_serv.MessageDataConvert(msg, sendParams)
-			SnmpMakeRequest(snmpItem, param)
+			go SnmpMakeRequest(snmpItem, param)
 		}
 	}
 
@@ -94,26 +94,38 @@ func SnmpMakeRequest(params model.SnmpSendParams, commonParam model.CommonInitPa
 
 	response, err := snmp_serv.SnmpManagerStart(params, commonParam.SnmpFuncType)
 	if err != nil {
-
 		model.WarnOnError(err, "Error: SnmpMakeRequest")
-		retry := params.Retry
-		if retry > 5 {
-			_ = snmp_serv.SnmpExceptionHandler(params)
-		} else {
-			params.Retry++
-			msg := amqp_serv.MessageConvertTostring(params)
-			amqp_serv.ProducerAddMessage(msg)
-		}
-
+		SnmpRetriesAction(params)
 		return err
 	}
 
-	_ , jsonSaveError := snmp_serv.MakeJsonMultiRequest(commonParam.SaveApiUrl, response.Items)
-
+	jsonLog , jsonSaveError := snmp_serv.MakeJsonMultiRequest(commonParam.SaveApiUrl, response.Items)
 	if jsonSaveError != nil {
 		model.WarnOnError(err, "MakeJsonMultiRequest::Json SEND Error:")
 	}
 
+
+	fmt.Println("======= Start ========")
+	fmt.Println("SnmpManagerStart : OK", response)
+	fmt.Println("MakeJsonResult : OK", jsonLog)
+	fmt.Println("======= End  ========")
+
 	return jsonSaveError
+
+}
+
+
+func SnmpRetriesAction(params model.SnmpSendParams) error {
+
+	retry := params.Retry
+	if retry > 5 {
+		_ = snmp_serv.SnmpExceptionHandler(params)
+	} else {
+		params.Retry++
+		msg := amqp_serv.MessageConvertTostring(params)
+		amqp_serv.ProducerAddMessage(msg)
+	}
+
+	return nil
 
 }

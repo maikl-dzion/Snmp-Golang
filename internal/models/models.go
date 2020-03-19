@@ -5,6 +5,8 @@ import (
 	"github.com/BurntSushi/toml"
 	"log"
 	"os"
+	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -44,16 +46,8 @@ type CommonInitParam struct {
 
 func GetCommonInitParam() CommonInitParam {
 
-	//commonParam := CommonInitParam{
-	//	QueueName: QUEUE_NAME,
-	//	AmqpUrl: AMQP_API_URL,
-	//	SaveApiUrl: SAVE_API_URL,
-	//	AmqpFuncType: AMQP_FUNC_TYPE,
-	//	SnmpFuncType: SNMP_FUNC_TYPE,
-	//}
-
 	configFile := CONFIG_FILE
-	configPath := CONFIG_PATH
+	configPath := GetRootDir(CONFIG_PATH)
 	path := configPath + "/" +configFile
 
 	var config CommonInitParam
@@ -90,7 +84,9 @@ func LogSave(msg string, err error, fileName string) {
 	if fileName == "" {
 		fileName = "log"
 	}
-    logFileName := LOGS_PATH + "/" +fileName+ ".log"
+
+	logsPath := GetRootDir(LOGS_PATH)
+    logFileName := logsPath + "/" +fileName+ ".log"
 	logfile, errLog := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if errLog != nil {
 		log.Fatalln(errLog)
@@ -121,7 +117,9 @@ func EventLogSave(msg, eventName, fileName string) {
 		eventName = "CommonEvent"
 	}
 
-	logFileName := LOGS_PATH + "/" +fileName+ ".log"
+	logsPath := GetRootDir(LOGS_PATH)
+	logFileName := logsPath + "/" +fileName+ ".log"
+
 	logfile, errLog := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if errLog != nil {
 		log.Fatalln(errLog)
@@ -147,5 +145,43 @@ func FatalError(err error, msg string) {
 		fmt.Println(msg, err)
 		LogSave(msg, err, "FatalErrors")
 		log.Fatalf("%s: %s", msg, err)
+	}
+}
+
+
+
+func GetRootDir(localDirName string) string {
+
+	rootPath, errDir := filepath.Abs(".")
+	if errDir != nil {
+		fmt.Println(errDir, "Not Load Root Dir")
+	}
+
+	delimiter := "/"
+	// delimiter := "/../"
+	rootDir := rootPath + delimiter + localDirName
+	fmt.Println("Root Dir:", rootDir)
+
+	return rootDir
+}
+
+
+
+func DateTypeConvert(num int, str string) (int, string) {
+
+	if num != 0 {
+		s := strconv.Itoa(num)
+		return num, s
+	} else {
+
+		if str == "" {
+			return num, str
+		}
+
+		d, err := strconv.Atoi(str)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return d, str
 	}
 }
