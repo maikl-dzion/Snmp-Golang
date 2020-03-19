@@ -7,14 +7,6 @@ import (
 	"time"
 )
 
-//type ResponseMessage struct {
-//	Oid      string `json:"oid"`
-//	Value    string `json:"value"`
-//	Ip       string `json:"ip"`
-//	DeviceId string `json:"device_id"`
-//}
-//
-//type ResponseJsonItems []ResponseMessage
 
 const QUEUE_NAME   = "SNMP_QUEUE"
 const AMQP_API_URL = "amqp://tester:12345@172.16.16.235:5672/"
@@ -35,6 +27,7 @@ type SnmpSendParams struct {
 	SelCount  int
 }
 
+
 type CommonInitParam struct {
 	QueueName  string
 	AmqpUrl     string
@@ -42,7 +35,6 @@ type CommonInitParam struct {
 	AmqpFuncType string
 	SnmpFuncType string
 }
-
 
 
 func GetCommonInitParam() CommonInitParam {

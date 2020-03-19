@@ -1,4 +1,4 @@
-package snmp_handler
+package snmp_services
 
 import (
 	"bytes"
@@ -13,11 +13,6 @@ import (
 	snmp "github.com/soniah/gosnmp"
 )
 
-//type PduValue struct {
-//	name   string
-//	column string
-//	value  interface{}
-//}
 
 
 ////////////////////////////////////////
@@ -142,9 +137,6 @@ func SnmpManagerStart(conf model.SnmpSendParams, fType string) (SnmpResultItems,
 
 func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) (map[string]interface{}, error) {
 
-	//fmt.Println(messages[0])
-	//slice1 := []int{1,2,3}
-
 	var jsonResultLog map[string]interface{}
 
 	bytesRepresentation, err := json.Marshal(messages)
@@ -161,8 +153,6 @@ func MakeJsonMultiRequest(apiUrl string, messages []SnmpResultMessage) (map[stri
 	}
 
 	jsonSaveError := json.NewDecoder(resp.Body).Decode(&jsonResultLog)
-
-	// log.Println("MakeJsonMultiRequest::JsonResultSaveLog:", jsonResultLog)
 
 	return jsonResultLog, jsonSaveError
 
@@ -197,26 +187,9 @@ func SnmpResultDataConvert(pdu snmp.SnmpPDU) SnmpResultMessage {
 }
 
 
-func SnmpMessageRetryHandler(msg model.SnmpSendParams) error {
-	fmt.Println(msg)
-	return nil
-	// return amqp_handl.AmqpProducer(msg)
-}
 
 func SnmpExceptionHandler(msg model.SnmpSendParams) error {
 	fmt.Println(msg)
 	return nil
 }
 
-
-func UnSuccessfulRequest(params model.SnmpSendParams) {
-	retry := params.Retry
-	if retry > 5 {
-		_ = SnmpExceptionHandler(params)
-	} else {
-		retry++
-		params.Retry = retry
-		_ = SnmpMessageRetryHandler(params)
-	}
-	// model.WarnOnError(err, "MakeJsonMultiRequest::Json Marshal ERROR:")
-}

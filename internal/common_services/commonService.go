@@ -42,13 +42,13 @@ func BasisGetAction(queueInit  amqp_serv.QueueInitResultParam,
 	                sendParams model.SnmpSendParams,
 	                param model.CommonInitParam) {
 
-	msg, err, ok := amqp_serv.GetOneMessage(queueInit)
-	if err == nil && ok {
-		snmpItem := amqp_serv.MessageDataConvert(msg, sendParams)
-		SnmpMakeRequest(snmpItem, param)
-		// fmt.Println(snmpItem)
+	for {
+		msg, err, ok := amqp_serv.GetOneMessage(queueInit)
+		if err == nil && ok {
+			snmpItem := amqp_serv.MessageDataConvert(msg, sendParams)
+			SnmpMakeRequest(snmpItem, param)
+		}
 	}
-
 
 }
 
@@ -70,9 +70,7 @@ func BasisConsumeAction(queueInit  amqp_serv.QueueInitResultParam,
 	)
 
 	if err != nil {
-
 		model.WarnOnError(err, "Warn Error - Get Messages Consume Func")
-
 	} else {
 
 		ch := 0
