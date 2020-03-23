@@ -5,6 +5,7 @@ import (
 	model "Snmp-Golang/internal/models"
 	snmp_serv "Snmp-Golang/internal/snmp_services"
 	"fmt"
+	"sync"
 )
 
 
@@ -128,4 +129,67 @@ func SnmpRetriesAction(params model.SnmpSendParams) error {
 
 	return nil
 
+}
+
+
+
+////////////////////////////////////////
+// New Version (Gorutines and channal)
+
+
+func GetTasksFromQueue(messChannal chan<- model.SnmpSendParams,
+	                   param model.CommonInitParam,
+	                   sendParams model.SnmpSendParams,
+                       wg *sync.WaitGroup) {
+
+
+	queueInit, errOpen := amqp_serv.RabbitQueueInit(param.AmqpUrl, param.QueueName)
+	if errOpen != nil {
+		model.FailOnError(errOpen, "RabbitQueueOpen - FATAL ERROR")
+	}
+	defer queueInit.Connect.Close()
+	defer queueInit.Channel.Close()
+
+	// fmt.Println(queueInit)
+
+	switch param.AmqpFuncType {
+	case "get" :
+
+		msg, err, ok := amqp_serv.GetOneMessage(queueInit)
+		if err == nil && ok {
+			snmpItem := amqp_serv.MessageDataConvert(msg, sendParams)
+			messChannal <- snmpItem
+
+		} else {
+			ErrorGetTask(err)
+		}
+
+		//case "consumer" :
+		//	BasisConsumeAction(queueInit, sendParams, param)
+		//
+		//default:
+		//	BasisGetAction(queueInit, sendParams, param)
+
+	}
+
+	defer wg.Done()
+
+}
+
+
+func SendRequestToDevice(messChannal chan model.SnmpSendParams,
+	                     param model.CommonInitParam,
+                         wg *sync.WaitGroup) {
+
+    message := <- messChannal
+	SnmpMakeRequest(message, param)
+    close(messChannal)
+	defer wg.Done()
+
+
+}
+
+
+func ErrorGetTask(e error) {
+	fmt.Println(e)
 }

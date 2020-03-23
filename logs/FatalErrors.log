@@ -1,1 +1,1 @@
-2020/03/19 13:02:30 [Msg]:Fatal Error - Connect to RabbitMQ -||||- [Error]: AMQP scheme must be either 'amqp://' or 'amqps://'
+2020/03/23 18:12:27 [Msg]:Fatal Error - Connect to RabbitMQ -||||- [Error]: dial tcp 172.16.16.235:5672: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
