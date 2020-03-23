@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="818176da-6d3e-40ab-8246-639b2bcbc127" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/services_test/channel.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services_test/f1.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/common_services/commonService.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/common_services/commonService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/models.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/snmp_services/snmpServices.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/snmp_services/snmpServices.go" afterDir="false" />
-    </list>
+    <list default="true" id="818176da-6d3e-40ab-8246-639b2bcbc127" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,53 +9,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/internal/snmp_services/snmpServices.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="128" column="21" selection-start-line="128" selection-start-column="19" selection-end-line="128" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/config.toml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/internal/amqp_services/amqpServices.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1131">
-              <caret line="80" column="5" selection-start-line="80" selection-start-column="5" selection-end-line="80" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/internal/common_services/commonService.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="48" column="15" selection-start-line="48" selection-start-column="15" selection-end-line="48" selection-end-column="15" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cmd/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="23" column="42" selection-start-line="23" selection-start-column="16" selection-end-line="23" selection-end-column="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -127,9 +73,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="254" />
-    <option name="y" value="121" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="397" />
+    <option name="y" value="122" />
     <option name="width" value="1083" />
     <option name="height" value="807" />
   </component>
@@ -279,15 +225,14 @@
     </recent_temporary>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="397" y="122" width="1083" height="807" extended-state="1" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1369936" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2512219" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5248918" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.51111114" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.22943723" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -629,7 +574,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/internal/common_services/commonService.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
+        <state relative-caret-position="46">
           <caret line="48" column="15" selection-start-line="48" selection-start-column="15" selection-end-line="48" selection-end-column="15" />
         </state>
       </provider>
