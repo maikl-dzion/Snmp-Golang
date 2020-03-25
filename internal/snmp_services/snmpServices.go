@@ -79,8 +79,6 @@ func SnmpConfigInit(s model.SnmpSendParams) (*snmp.GoSNMP, error) {
 
 func SnmpManagerStart(conf model.SnmpSendParams, fType string) (SnmpResultItems, error) {
 
-	now := time.Now()
-
 	client, err := SnmpConfigInit(conf)
 	if err != nil {
 		log.Fatal("Snmp Config Is Nil")
@@ -94,11 +92,13 @@ func SnmpManagerStart(conf model.SnmpSendParams, fType string) (SnmpResultItems,
 
 	switch fType {
 	case "GET":
+
 		oids := []string{oid}
 		pkt, err := client.Get(oids)
 		if err != nil {
 			return snmpResult, err
 		}
+
 		for _, pdu := range pkt.Variables {
 			snmpResult.CollectValues(pdu)
 		}
@@ -125,9 +125,10 @@ func SnmpManagerStart(conf model.SnmpSendParams, fType string) (SnmpResultItems,
 		}
 	}
 
-	ch := len(snmpResult.Items)
-	model.LogPrint(ch, "Snmp Result Oid Count:")
-	fmt.Println("Now", now)
+	// now := time.Now()
+	// ch := len(snmpResult.Items)
+	// model.LogPrint(ch, "Snmp Result Oid Count:")
+	// fmt.Println("Now", now)
 
 	return snmpResult, nil
 }

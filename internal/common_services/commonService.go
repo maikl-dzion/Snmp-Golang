@@ -100,16 +100,27 @@ func SnmpMakeRequest(params model.SnmpSendParams, commonParam model.CommonInitPa
 		return err
 	}
 
+	//r := snmp_serv.SnmpResultItems{}
+	//for i := 0; i < 15; i++ {
+	//
+	//	item := snmp_serv.SnmpResultMessage{}
+	//	item.Oid = "0.898.46756"
+	//	item.DataType = "0.898.46756"
+	//	item.ValueStr = "0.898.46756"
+	//	item.ValueInt = 567
+	//	item.DeviceId = "FFFGGGG"
+	//	item.Ip = "192.45.56.57"
+	//
+	//	r.Items = append(r.Items, item)
+	//}
+	//response.Items = r.Items
+
 	jsonLog , jsonSaveError := snmp_serv.MakeJsonMultiRequest(commonParam.SaveApiUrl, response.Items)
 	if jsonSaveError != nil {
 		model.WarnOnError(err, "MakeJsonMultiRequest::Json SEND Error:")
 	}
 
-
-	fmt.Println("======= Start ========")
-	fmt.Println("SnmpManagerStart : OK", response)
-	fmt.Println("MakeJsonResult : OK", jsonLog)
-	fmt.Println("======= End  ========")
+	printSnmpActionResultView(response, jsonLog)
 
 	return jsonSaveError
 
@@ -133,6 +144,14 @@ func SnmpRetriesAction(params model.SnmpSendParams) error {
 
 
 
+func printSnmpActionResultView(rSnmp snmp_serv.SnmpResultItems,
+	                           rJson map[string]interface{}) {
+	//fmt.Println("======= Start ========")
+	//fmt.Println("SnmpManagerStart : OK", rSnmp)
+	//fmt.Println("MakeJsonResult : OK"  , rJson)
+	//fmt.Println("======= End  ========")
+}
+
 ////////////////////////////////////////
 // New Version (Gorutines and channal)
 
@@ -140,7 +159,7 @@ func SnmpRetriesAction(params model.SnmpSendParams) error {
 func GetTasksFromQueue(messChannal chan<- model.SnmpSendParams,
 	                   param model.CommonInitParam,
 	                   sendParams model.SnmpSendParams,
-                       wg *sync.WaitGroup) {
+                       wg *sync.WaitGroup, taskCount int) {
 
 
 	queueInit, errOpen := amqp_serv.RabbitQueueInit(param.AmqpUrl, param.QueueName)
@@ -159,6 +178,7 @@ func GetTasksFromQueue(messChannal chan<- model.SnmpSendParams,
 		if err == nil && ok {
 			snmpItem := amqp_serv.MessageDataConvert(msg, sendParams)
 			messChannal <- snmpItem
+			printTaskCount(taskCount, 1)
 
 		} else {
 			ErrorGetTask(err)
@@ -176,20 +196,124 @@ func GetTasksFromQueue(messChannal chan<- model.SnmpSendParams,
 
 }
 
-
 func SendRequestToDevice(messChannal chan model.SnmpSendParams,
 	                     param model.CommonInitParam,
-                         wg *sync.WaitGroup) {
+                         wg *sync.WaitGroup, taskCount int) {
 
     message := <- messChannal
 	SnmpMakeRequest(message, param)
+	printTaskCount(taskCount, 2)
+	// time.Sleep(1 * time.Second)
     close(messChannal)
 	defer wg.Done()
-
 
 }
 
 
 func ErrorGetTask(e error) {
 	fmt.Println(e)
+}
+
+
+func printTaskCount(ch int, stype int) {
+
+	switch stype {
+
+	case 1 :
+		fmt.Println("Кол. полученных заданий", ch)
+
+	case 2 :
+		fmt.Println("Кол. выполненных заданий", ch)
+
+	}
+}
+
+
+
+
+
+
+
+///////////////////////////////
+///////////////////////////////
+
+
+func GetTasksFromQueueNew(param model.CommonInitParam,
+	                      sendParams model.SnmpSendParams,
+	                      wg *sync.WaitGroup) {
+
+	queueInit, errOpen := amqp_serv.RabbitQueueInit(param.AmqpUrl, param.QueueName)
+	if errOpen != nil {
+		model.FailOnError(errOpen, "RabbitQueueOpen - FATAL ERROR")
+	}
+	defer queueInit.Connect.Close()
+	defer queueInit.Channel.Close()
+
+	// fmt.Println(queueInit)
+
+	switch param.AmqpFuncType {
+	case "get" :
+
+		msg, err, ok := amqp_serv.GetOneMessage(queueInit)
+		if err == nil && ok {
+			snmpItem := amqp_serv.MessageDataConvert(msg, sendParams)
+			SendRequestToDeviceNew(snmpItem, param)
+
+		} else {
+			ErrorGetTask(err)
+		}
+
+	}
+
+	defer wg.Done()
+
+}
+
+
+func SendRequestToDeviceNew(message model.SnmpSendParams,
+	                        param   model.CommonInitParam) {
+
+	SnmpMakeRequestNew(message, param)
+	// printTaskCount(taskCount, 2)
+	// close(messChannal)
+	// defer wg.Done()
+
+}
+
+
+func SnmpMakeRequestNew(params model.SnmpSendParams,
+	                    commonParam model.CommonInitParam) error {
+
+	response, err := snmp_serv.SnmpManagerStart(params, commonParam.SnmpFuncType)
+	if err != nil {
+		model.WarnOnError(err, "Error: SnmpMakeRequest")
+		SnmpRetriesAction(params)
+		return err
+	}
+
+	//r := snmp_serv.SnmpResultItems{}
+	//for i := 0; i < 15; i++ {
+	//
+	//	item := snmp_serv.SnmpResultMessage{}
+	//	item.Oid = "0.898.46756"
+	//	item.DataType = "0.898.46756"
+	//	item.ValueStr = "0.898.46756"
+	//	item.ValueInt = 567
+	//	item.DeviceId = "FFFGGGG"
+	//	item.Ip = "192.45.56.57"
+	//
+	//	r.Items = append(r.Items, item)
+	//}
+	//response.Items = r.Items
+
+
+	jsonLog , jsonSaveError := snmp_serv.MakeJsonMultiRequest(commonParam.SaveApiUrl, response.Items)
+	if jsonSaveError != nil {
+		model.WarnOnError(err, "MakeJsonMultiRequest::Json SEND Error:")
+	}
+
+	printSnmpActionResultView(response, jsonLog)
+
+	return jsonSaveError
+
 }

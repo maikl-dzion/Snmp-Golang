@@ -160,7 +160,7 @@ func GetRootDir(localDirName string) string {
 	delimiter := "/"
 	// delimiter := "/../"
 	rootDir := rootPath + delimiter + localDirName
-	fmt.Println("Root Dir:", rootDir)
+	// fmt.Println("Root Dir:", rootDir)
 
 	return rootDir
 }

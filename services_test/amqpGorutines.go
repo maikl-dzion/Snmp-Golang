@@ -62,10 +62,10 @@ func main() {
 
 	ch      := 0
 	stateCh := 0
-	limit   := 20
+	limit   := 30
 
 	// for {
-	for i := 0; i < 20000; i++ {
+	for i := 0; i < 5000; i++ {
 
 		wg.Add(2)
 
@@ -73,10 +73,13 @@ func main() {
 		stateCh++
 
 		messChannel := make(chan model.SnmpSendParams)
-		go common_serv.GetTasksFromQueue(messChannel, commonParams, sendParams, &wg)
-		go common_serv.SendRequestToDevice(messChannel, commonParams, &wg)
 
-		_printCh(ch)
+		// go common_serv.GetTasksFromQueueNew(commonParams, sendParams, &wg)
+
+		go common_serv.GetTasksFromQueue(messChannel, commonParams, sendParams, &wg, ch)
+		go common_serv.SendRequestToDevice(messChannel, commonParams, &wg, ch)
+
+		// _printCh(ch)
 
 		if stateCh > limit {
 			stateCh = 0
@@ -85,7 +88,14 @@ func main() {
 
 	}
 
-	fmt.Println("End Request:")
+
+	fmt.Println("Befory Ok:")
+
+	for i := 0; i < 500; i++ {
+		time.Sleep(5 * time.Second)
+	}
+
+	fmt.Println("End Request Ok:")
 
 	wg.Wait()
 
@@ -96,6 +106,3 @@ func main() {
 func _printCh(ch int) {
 	fmt.Println("Кол. полученных заданий", ch)
 }
-
-
-
